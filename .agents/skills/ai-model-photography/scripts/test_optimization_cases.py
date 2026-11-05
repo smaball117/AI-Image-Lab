@@ -1,25 +1,28 @@
 #!/usr/bin/env python3
-"""Validate the *curated golden examples*; does not invoke an LLM or image generator."""
+"""Validate authored test specifications and demonstration coverage.
+No LLM call: this is NOT a Codex behavior test.
+"""
 from pathlib import Path
-import json
-import sys
-root = Path(__file__).resolve().parents[1]
-data = json.loads((root/"tests"/"optimization-cases.json").read_text(encoding="utf-8"))
-errors=[]
+import json,sys
+root=Path(__file__).resolve().parents[1]
+data=json.loads((root/"tests/optimization-cases.json").read_text(encoding="utf-8"))
 cases=data["cases"]
-if len(cases)<10: errors.append("Expected 10 or more examples")
-ids=[x["id"] for x in cases]
-if len(ids)!=len(set(ids)): errors.append("Duplicate IDs")
+errors=[]
+if len(cases)<12:errors.append("expected at least 12 cases")
 for case in cases:
-    o=case["optimized"]
-    if o.strip()==case["input"].strip(): errors.append(case["id"]+": unchanged input")
-    for v in case["must_keep"]+case["must_include"]:
-        if v not in o: errors.append(case["id"]+": missing "+v)
-    for v in case["must_avoid"]:
-        if v in o: errors.append(case["id"]+": forbidden "+v)
+    if not case.get("input") or not case.get("expected_focus"):
+        errors.append(case.get("id","?")+": missing input/focus")
+    if case.get("mode")!="route_out" and not case.get("expected_dimensions"):
+        errors.append(case.get("id","?")+": missing dimensions")
+    if "reference" in case.get("expected_focus","").lower():
+        errors.append(case.get("id","?")+": reference image must not be mandatory")
+examples=(root/"examples/briefs.md").read_text(encoding="utf-8")
+for phrase in ["白色耳机","皮肤细腻","光线柔和","自然站立","高清","双眼","对焦","负"]:
+    if phrase not in examples:
+        errors.append("Full example missing "+phrase)
 if errors:
-    print("FAIL: "+str(len(errors))+" golden-case issue(s)")
-    for e in errors: print(" - "+e)
+    print("FAIL fixture specs",len(errors))
+    for item in errors:print("-",item)
     sys.exit(1)
-print("PASS:",len(cases),"golden-case text invariants.")
-print("NOTICE: This checks examples, not Codex activation, generated responses, or image quality.")
+print("PASS",len(cases),"authored scenario specs + six-dimension example coverage")
+print("NOTE: tests have not asked Codex to produce or evaluate a new prompt")
