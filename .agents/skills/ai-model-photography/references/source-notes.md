@@ -1,28 +1,25 @@
-# Source provenance, evidence levels, and limitations
+# Source provenance and evidence limitations
 
-## Editorial source supplied by user
+## User-supplied article
 
-- Title: AIGC— AI模特的真实感如何做到
+- 《AIGC— AI模特的真实感如何做到》
 - Author: 口木文化x何柳健
-- Date shown in supplied clipping: 2026-09-11
+- Published in clipping: 2026-09-11
 - URL: https://www.zcool.com.cn/work/ZNzQxMzAyODQ=.html
-- Used conceptually for: decomposition of vague "realistic/beautiful/natural/high-definition" language into skin, lighting, pose, clothing and camera dimensions; combining affirmative descriptors with targeted exclusions; adapting descriptions to scene and product type.
-- The full third-party article and its example image URLs are **not republished** here; rules are rewritten as actionable workflow guidance.
 
-## Additional skill-design decisions, not claims from the article
+Primary educational principle from source: replace vague prompts (“漂亮”, “细腻”, “柔和”, “自然”, “真实”, “高清”) by decomposed visible properties. The article organizes photographic realism by skin, lighting, pose, clothing, camera, plus targeted exclusions and diverse scenario examples including headphone model, beauty cosmetics, standing/walking/sitting, high/low key studio portraits, eyewear and clothing/background variants.
 
-- Explicit image-role authorization and invariants.
-- Single-variable repair protocol.
-- Age-aware portrait and kidswear constraints.
-- Scope limits against product-only, lighting-only and video tasks.
-- 0-2 QA scoring, thresholds and test cases.
-- Caution that image generators do not deterministically obey camera specs, exact "8K" output or numerical lighting ratios.
+**The article is third-party editorial advice.** Its statements that models cannot understand subjective words literally, exact 85mm/f stop/light ratio or 8K strings, and claimed workflow performance should be treated as heuristics, not deterministic facts. The original long prompts/images are not copied into this repository.
 
-## Knowledge/evidence labels
+## Skill-specific design choices
 
-- **Editorial heuristic:** author recommendation to test, not a universal model behavior.
-- **Visual/photographic principle:** physically plausible balance, contact, fabric drape, light direction.
-- **Project rule:** user-specified constraints in a given task.
-- **Verified result:** only after real model outputs are inspected and outcomes recorded.
+- Prompt optimization as first-class job, **not** default photoshoot generation.
+- LOCK / EDIT / UNKNOWN preservation.
+- Minimal rewriting and single-variable A/B testing.
+- Child-appropriate skin and clothing-sensitive commercial application.
+- Reference-image role isolation and contradiction detection.
+- Test fixtures, sample rewrites, and text-score rubric.
 
-When conflict arises, do not promote an editorial heuristic above a project rule or observed evidence. Do not promise cross-model stability without cross-model testing.
+These are design decisions informed by the user's commercial workflow; they are not verbatim claims from the article.
+
+Evidence labels: `source example` vs `editorial inference` vs `verified output`. Do not label text reasoning or a static checker as a generated-image test.
