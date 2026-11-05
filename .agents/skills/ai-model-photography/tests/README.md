@@ -1,53 +1,78 @@
-# v0.2: Prompt optimizer evaluation protocol
+# v0.3 实验：一句话 -> 完整高清 AI 模特生图提示词
 
-**Primary goal:** preserve supplied prompts and change vague/contradictory parts, not invent complete new shoots.
+## 验收目标
 
-## Level 1: deterministic checks (Python, no dependencies)
+让 Codex 使用 `$ai-model-photography` 将用户提供的**简单文字提示词**，按文章的外貌、皮肤、光影、姿态、服装/产品、镜头与高清质量维度拆解，输出完整、可复制的文字生图提示词。
 
-From the `ai-model-photography` directory:
+**无需上传参考图片。测试中的“高清”专指新生成的人物照片的目标清晰度。**
+
+## 静态结构测试
+
+在 Skill 文件夹下执行：
 
 ```powershell
 python scripts/validate_skill.py
 python scripts/test_optimization_cases.py
 ```
 
-The first verifies files/frontmatter/links and fixture shape. The second checks **curated golden rewrite examples** for preserved phrases, required details, and forbidden additions. It **does not** generate AI rewrites and cannot prove model quality.
+这两项只检查文件、链接、用例规格及完整示例的六维度内容，**不会调用 Codex，也不能证明任何生成效果**。
 
-## Level 2: test actual Codex behavior
+## Codex 真实行为实验
 
-Explicit invocation:
+### A. 文章核心案例（必须优先测试）
 
 ```text
 $ai-model-photography
-这是我已有的提示词，请你只帮我优化，不要设计新画面：
-"图1是沙发场景，图2是男孩脸，图3是衣服，男孩自然坐着，光线柔和，衣服要有质感。保留图1光影，服装结构和颜色不变。"
-请标注模糊处，再输出最小改写版，最后说明你究竟改了哪些词。
+请把这一句初级提示词拆成可执行的视觉维度，再写出能直接用于AI生图的完整高清商业人物摄影提示词：
+
+一个年轻漂亮的欧美女孩，戴着白色耳机，皮肤细腻，光线柔和，自然站立，真实一点，高清。
+
+不要让我上传参考图片。这里的“高清”是指最终生成的人物照片高清。
 ```
 
-Further prompts (run in separate Codex turns; compare with [golden examples](optimization-cases.json)):
+**检查：** 是否按 `外貌 / 皮肤 / 光影 / 姿态 / 服装与产品 / 镜头与画质 / 负面约束` 输出；耳机是不是视觉焦点；画质描述有没有具体对焦与细节；是否出现没要求的“修图、原图、图1”。
 
-1. **Skin only**: "保留图1人物、衣服、光线和构图。只有皮肤太塑料，请只优化这一小段提示词。"
-2. **Specificity**: "把漂亮、细腻、柔和、自然、高清五个词拆为不同视觉变量，并解释选择条件，不要写整张照片的完整提示词。"
-3. **Conflict**: "我的原文写了保持图1光影不变又写了新增左侧硬光，帮我指出冲突并给出最小修改。"
-4. **No invention**: "场景图只有沙发，没有床。我的衣服是平针纯棉，不是坑条。不要增加床和罗纹。"
-5. **Non-target**: "我只想从零生成一瓶玻璃精华液商业静物，没有人物。" -> Skill should not auto-trigger.
-6. **Non-target**: "帮我设计20秒TVC动态分镜。" -> Skill should not auto-trigger.
+### B. 其他不同产品
 
-Record whether it found the existing prompt, recognized the intended edit, avoided adding new faces/props/clothing and yielded a **minimal change**.
+```text
+$ai-model-photography
+12岁男孩穿纯棉家居服，坐在沙发上，自然真实，高清电商模特照。请拆维度并优化为完整提示词，不用参考图。
+```
 
-## Level 3: A/B model generation
+```text
+$ai-model-photography
+商务降噪耳机，30岁左右男性，清冷专业、光影立体、高清商业肖像。请生成完整的具体提示词。
+```
 
-After Codex rewrites have been approved, use the original and optimized prompts on the **same image tool** with same references/settings where possible. First test:
-- age-appropriate skin texture without other changes
-- sofa support/pose without changing outfit
-- face-only restoration keeping background and original lighting
+### C. 只拆词的局部需求
 
-Record original and optimized prompts, model name/version, image files, visible success/failure, and rollback decisions in `experiment-log.md`. **No run, no PASS**.
+```text
+$ai-model-photography
+只拆解“高清”一词。针对新生成的AI模特照片，具体应该写哪些镜头、对焦、细节和质量要求？不要写整张图的创意方案。
+```
 
-## Acceptance criteria
+### D. 作用域负样本
 
-- Static checks pass
-- Codex explicit invocation and both positive/negative trigger checks pass
-- For at least five distinct user prompts, optimized output preserves all hard locks and edits only target dimensions
-- Three A/B image trials demonstrate intended improvement without losing correct details
-- Test notes saved; keep branch experimental until all gates passed
+```text
+只需要把我本地现有的一张低分辨率照片放大到4000px，请帮我选择放大工具。
+```
+
+```text
+设计一张没有人物的纯玻璃香水商业静物摄影图。
+```
+
+此 Skill 不应自动占用这些任务。
+
+## 实际图像 A/B
+
+对同一想法，用原始一句话（A）和 Skill 输出的完整优化提示词（B）在同一生图工具运行。尽量固定模型、画幅和其他可控设置，逐项评价：
+
+- 人物长相和产品定位是否匹配；
+- 真实肤理与不磨皮；
+- 光源方向、高光、阴影；
+- 身体重心与接触；
+- 产品和衣料是否真实；
+- 双眼/耳机/服装关键处是否清晰；
+- 实际输出像素与成图锐度是否符合工具能力。
+
+将最终结果写入 `experiment-log.md`，**未调用不标成功**。
