@@ -1,4 +1,4 @@
 interface:
-  display_name: "AI Model Photography"
-  short_description: "Realistic commercial AI models, garment fidelity, and reference control"
-  default_prompt: "Use $ai-model-photography to analyze my model references, lock identity and garment details, and write a commercial photography prompt with a QA checklist."
+  display_name: "AI Model Prompt Optimizer"
+  short_description: "Turn vague commercial model prompts into controllable visual instructions"
+  default_prompt: "Use $ai-model-photography to diagnose and minimally optimize my existing AI model photography prompt. Preserve all correct subjects, garments, references, and scene constraints; explain vague-to-observable replacements."
