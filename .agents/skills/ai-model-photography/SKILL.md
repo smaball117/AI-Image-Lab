@@ -1,73 +1,71 @@
 ---
 name: ai-model-photography
-description: Design, reverse-analyze, or repair AI-generated realistic commercial model photography prompts for apparel, kidswear, beauty, accessories, and lifestyle campaigns. Use when a person/model is a principal visual subject, especially for face/identity consistency, natural pose, garment fidelity, skin realism, scene interaction, and reference-image role control. Do not use for product-only still life, pure lighting consultation, video direction, or stylized character/IP development.
+description: Improve, debug, and precisely rewrite existing AI commercial model photography prompts. Use when a user brings vague model-prompt language, a long or conflicting prompt, realism problems (skin, pose, garment, camera, lighting), or a failed output and wants prompt optimization, not a newly invented photo concept. Specializes in turning fuzzy aesthetic adjectives into observable, reference-aware instructions while preserving the user's existing subject, outfit, scene, and constraints.
 ---
 
-# AI Model Photography
+# AI Model Photography | Prompt Optimizer
 
-Produce controllable prompts and targeted revisions for **realistic commercial photographs with human models**. This skill produces a brief, image-role map, execution-ready prompt, and quality checks; it does not itself guarantee an image or run an image model.
+**Primary job: improve an existing prompt, not invent a new photoshoot.** Accept the user's original words as the design brief, preserve what is already correct, and translate vague or contradictory phrases into visually testable instructions. The best revision is not necessarily longer: make **the smallest sufficient change**.
 
-## Invoke / avoid
+## Scope and dispatch
 
-- Invoke for commercial model portraits, apparel model campaigns, multi-reference model composites, pose transfer, face fidelity, clothing fidelity, and diagnosis of unnatural AI people.
-- Avoid for product-only photography, standalone lighting-design analysis, video/storyboard generation, cartoon character design, or generic beautification unrelated to commercial model photography. Do not swallow those tasks merely because an image contains a background person.
-- If another specialized skill is present, route to the skill best matching the **primary requested change**, rather than silently running every installed skill.
+Activate for requests such as:
+- “我的AI模特不真实/皮肤像塑料，帮我优化提示词”
+- “自然一点、精致一点、光线柔和、高清、衣服有质感，这些词如何改”
+- “帮我检查这段AI模特提示词是不是互相打架”
+- “保留图1人物和场景，只把图2面部细节修复到图1，怎么改提示词”
+- “我只想修复姿势/肤色/衣服细节，其他都不改”
 
-## Input contract
+**Do not auto-activate** for a user asking only to create/generate an image without an existing prompt, pure product still life, pure lighting education, video directing, or stylized IP character design. If the user expressly requests creation from scratch, explain that this skill optimizes existing instructions and ask for an existing prompt or work within any supplied brief only when the user authorizes that shift.
 
-Extract whatever the user actually supplied. Do not invent missing uploaded images or describe unseen details.
+## Non-negotiable operating rules
 
-| Field | Capture |
-| --- | --- |
-| Task | new image / reference transfer / local repair / variant |
-| Output | count, aspect ratio, crop, resolution if specified |
-| Image roles | image 1..N: scene, face, body, garment, pose, product, lighting, style |
-| Human | age group, appearance, identity lock, expression, hair |
-| Garment/product | exact visual identity, colors, construction, print, fit, priority |
-| Environment | physical furniture, location, available objects, forbidden objects |
-| Camera | framing, viewpoint, lens intent, focus, depth of field |
-| Light | existing-image lock or new lighting direction |
-| Constraints | must preserve, may change, must exclude |
-| Model | target generator if specified; otherwise use plain language |
+1. **Input is authoritative.** Preserve user-specified character/age, outfit, product, scene, image-reference roles, framing, and lighting unless they explicitly ask to change them. Never manufacture scene objects, outfit ribbing, hairstyle, smile, precise face geometry, or light positions just to fill a template.
+2. **Diagnose before rewriting.** Identify vague terms, missing operational cues, conflicting instructions, redundant negatives, source-role leaks, and physical inconsistencies. Do not silently "upgrade" all five dimensions.
+3. **Change only implicated dimensions.** “皮肤太假” => skin edits, not a redesigned camera/light/pose. If source light is locked, preserve it.
+4. **Use observable language.** Move from subjective praise (“高级、漂亮、真实、自然、高清”) to age- and scene-appropriate descriptions of visible physical evidence.
+5. **Explicitly preserve known facts, flag unknown facts.** Never present invented specifics as if they came from the user's image or prompt. If an attribute is unknown, use neutral language or a small `[待确认]` field, not an arbitrary complexion, ethnicity, lens, garment weave, or prop.
+6. **No universal formulas.** The source article contains examples like 85mm, f/2.8, 1:2 light ratio, 8K; use only when relevant to requested visual results. They are generative hints, not measured optical/export guarantees.
+7. **Concise exclusions.** Add "don't" statements only where they defend hard constraints or a documented failure. Do not insert generic multi-page negative prompts.
+8. **Article examples are reference patterns, not mandatory templates.** The long portrait examples demonstrate decomposition and style consistency. Extract the **reasoning structure**, not their specific people, colors or accessories.
+9. **No false performance claims.** Only call an optimization "model-tested" after a genuine model run and saved comparison.
 
-Ask **one** clarification only if a missing input makes the requested identity or reference routing impossible to infer; otherwise state a conservative assumption and proceed.
+## Optimization algorithm
 
-## Workflow (mandatory)
+1. **Read original prompt literally.** Extract protected invariants and requested changes as `LOCK` / `EDIT` / `UNKNOWN`. If image references are named, route each image to only its authorized role using [reference-routing.md](references/reference-routing.md).
+2. **Mark problematic phrases.** Classify each as:
+   - `VAGUE`: subjective aesthetics without observable outcomes;
+   - `OMISSION`: missing facts needed to execute the stated goal;
+   - `CONFLICT`: mutually incompatible instructions;
+   - `LEAK`: wrong image controlling face/scene/garment;
+   - `PHYSICS`: gravity, contact, light/reflection inconsistencies;
+   - `REDUNDANT`: bloated repetitions, vague “8K/RAW/HD” stacking.
+3. **Choose a minimal edit plan.** Map defects to only relevant dimensions: identity/age, skin, expression/pose, clothing, scene/contact, camera/focus, light/color, quality/constraints. Consult [vague-to-visual.md](references/vague-to-visual.md), [case-library.md](references/case-library.md).
+4. **Rewrite the user's prompt, not the user's concept.** Preserve every correct explicit detail. Replace abstract terms with plausible **observable cues** tied to the task; maintain reference roles, action logic, and output format. Where the original does not supply enough to choose a new artistic direction, do not assert one.
+5. **Consistency check.** Validate lock/edit separation, child/adult appropriateness, fabric and print identity, scene support, focus/crop and lighting continuity. See [optimization-qa.md](references/optimization-qa.md).
+6. **Perform a micro-test plan.** State one controllable experiment based on the user's failure: original vs revised prompt on the same generator and references/settings when possible. If the user supplies before/after images, evaluate only the claimed repaired issue.
 
-1. **Route the job.** Determine the deliverable and whether this skill fits. For edits, write a one-sentence change boundary: what changes and what must not.
-2. **Assign image roles.** Use explicit image indices. Only inherit attributes from references granted that role. For conflicts, user-written instructions outrank the default convention. Read [reference-routing.md](references/reference-routing.md).
-3. **Lock invariants.** Identity (facial structure, age group), garment (pattern, fabric, seams, fit), product, composition, or lighting according to the user's actual requirements. Rank hard constraints above styling suggestions.
-4. **Translate subjective direction into visible cues.** Choose only relevant features from [realism-rules.md](references/realism-rules.md). Specify physical skin, hair, pose mechanics, cloth-body contact, light behavior, framing, and scene placement. Do not force all dimensions into every edit.
-5. **Write one coherent prompt.** Put task and reference priority first; then subject/wardrobe/action; then scene and camera; then light/material/focus; end with concise, **task-specific** exclusions. Prefer explicit positive descriptions over long repetitive negative lists.
-6. **Run a preflight.** Check reference leakage, identity drift, incorrect garments, body/environment collisions, contradictory lighting, lens/crop mismatch, duplicate persons, and invented objects. Use [qa-rubric.md](references/qa-rubric.md).
-7. **Repair through minimum changes.** If the user provides a failed output, identify the most likely faulty dimension and issue a revised prompt changing that dimension alone wherever possible. Preserve the user's original successful features.
+## Default answer, sized to request
 
-## Hard constraints
+For “帮我优化这段提示词”:
 
-- **Reference authority is scoped.** A pose-only reference never authorizes importing its face, outfit, age, scene, or gender. An outfit-only reference never authorizes swapping identity.
-- **No unsupported physical promises.** Focal length, aperture, lighting ratios, "4K/8K", RAW, and weighted prompt syntax are hints, not guarantees that the generator physically simulates optics or exports that resolution. Favor their intended visible outcomes; only promise exact pixels if an actual output tool supports them.
-- **Age-appropriate realism.** Preserve the subject's age. Do not apply mature facial lines to children or standardize all people into adult beauty faces. No sexualized presentation of minors.
-- **Clothing is not generic.** Do not add ribbing, logos, ornaments, changes of color, or fabric structure merely because they are common in prompts. Refer to actual garment references.
-- **World consistency.** Contact shadows, support surfaces, body weight, gaze direction, and occlusion must match the actual scene. Do not add beds or other objects absent from the supplied scene.
-- **Edit discipline.** For face-only correction, maintain the original framing, pose, body, clothing, background, shadows, and facial illumination unless explicitly unlocked.
-- **Truthful evaluation.** A textual checklist cannot prove visual quality. Report actual generation results only after images have been generated and inspected.
+**诊断**: 2-5 short points referencing the user's actual phrases, including any genuine contradiction.
 
-## Default output
+**优化后提示词**: one copyable revised version of the user's original prompt, faithfully preserving non-target facts. Do not append an unrelated creative brief.
 
-When the user asks for a reusable prompt, return:
+**修改说明**: 2-5 `原词 → 可观察表述 → 理由` mappings; if no ungrounded details were added, say so.
 
-1. **Image-role map / locks:** short, explicit, include image indices; omit if no references.
-2. **Final prompt:** one directly copyable Chinese natural-language prompt (or requested language), with no internal analysis inserted.
-3. **Targeted exclusions:** only material risks, not a generic wall of negatives.
-4. **Preflight & next test:** the 2-4 most failure-prone elements and the first single-variable test.
+**下一轮验证**: one concrete comparison with one change variable, not a claim that generation succeeded.
 
-For requests explicitly asking **only the prompt**, output the final prompt and only essential image-role constraints. For criticism/diagnosis, provide failure -> cause hypothesis -> minimal correction; do not rewrite unrelated dimensions.
+For “只要优化后的提示词”: give only the revised prompt. For “解释哪个词有问题”: analyze and propose alternatives, do not draft a whole image prompt unless explicitly requested. For an empty source prompt: ask the user to paste it, rather than inventing one.
 
-## Supporting material
+## References
 
-- [Reference routing and locks](references/reference-routing.md)
-- [Photography realism rules](references/realism-rules.md)
-- [Image QA rubric and correction loop](references/qa-rubric.md)
-- [Source provenance and limitations](references/source-notes.md)
-- [Representative briefs and outputs](examples/briefs.md)
-- [Test protocol](tests/README.md)
+- [Vague description -> observable cue dictionary](references/vague-to-visual.md)
+- [Original article case library, transformed into reusable editing patterns](references/case-library.md)
+- [Reference image roles and unchanged-field rules](references/reference-routing.md)
+- [Visual consistency and optimization QA](references/optimization-qa.md)
+- [Additional photography realism notes](references/realism-rules.md)
+- [Source provenance](references/source-notes.md)
+- [Before/after optimization examples](examples/briefs.md)
+- [Behavioral regression protocol](tests/README.md)
