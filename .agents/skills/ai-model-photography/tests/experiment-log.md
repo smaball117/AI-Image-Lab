@@ -1,18 +1,14 @@
-# Experiment log: AI Model Photography v0.1
+# Experiment log: AI Model Photography v0.2 Prompt Optimizer
 
-Status: **REMOTE STATIC CHECK PASS, CODEX AND IMAGE MODEL NOT YET TESTED**.
+Status: **experiment branch only; Codex and real model trials not yet performed**.
 
-| Date | Probe | Tool/model | Result | Evidence or notes |
-| --- | --- | --- | --- | --- |
-| 2026-11-05 | Remote file presence, frontmatter, relative links, JSON cases | GitHub connector + independent JS checks | **PASS** | 11 files fetched; 9 relative links resolved; 6 positive and 4 negative test cases; description length 482 |
-| | Local Python structure validator | Windows/Python | Not run | Run `python scripts/validate_skill.py` after installation |
-| | Explicit skill invocation | Codex | Not run | |
-| | Implicit scope positive | Codex | Not run | |
-| | Implicit scope negative | Codex | Not run | |
-| | Sofa apparel output | Image model | Not run | |
-| | Face-only output | Image model | Not run | |
-| | Adult beauty portrait | Image model | Not run | |
+| Stage | Test | Status | Evidence |
+| --- | --- | --- | --- |
+| Source audit | Re-read supplied case study: adjective->observable conversion and commercial scenarios | Done | Case library + rewrite examples |
+| Remote static file check | GitHub files/metadata/relative links/fixture validation | Pending | |
+| Golden-case checker | Run `scripts/test_optimization_cases.py` in Python | Pending | 12 curated before/after fixtures, checks examples only |
+| Codex activation | Explicit skill name + implicit positive + non-target negative | Not run | |
+| Codex rewrites | Prompt-preserving 5+ tasks | Not run | |
+| Model A/B | Original vs optimized on same model/references | Not run | |
 
-Remote static check is **not equivalent** to executing the Python validator or testing skill recognition in Codex. The current remote environment has no Codex CLI and cannot inspect the user's Windows installation.
-
-Rubric: `../references/qa-rubric.md`. Do not mark an output as passed without inspected images.
+**Do not equate curated example checking with automatic prompt rewriting by Codex.** Codex is not available in this remote session and user's local installation cannot be observed here.
