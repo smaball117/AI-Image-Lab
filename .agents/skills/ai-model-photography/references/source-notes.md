@@ -1,25 +1,30 @@
-# Source provenance and evidence limitations
+# 材料来源与设计边界
 
-## User-supplied article
+核心来源：用户上传《AIGC— AI模特的真实感如何做到》，口木文化x何柳健，站酷，剪藏标注2026-09-11，https://www.zcool.com.cn/work/ZNzQxMzAyODQ=.html 。
 
-- 《AIGC— AI模特的真实感如何做到》
-- Author: 口木文化x何柳健
-- Published in clipping: 2026-09-11
-- URL: https://www.zcool.com.cn/work/ZNzQxMzAyODQ=.html
+## 直接源于文章的组织方法
 
-Primary educational principle from source: replace vague prompts (“漂亮”, “细腻”, “柔和”, “自然”, “真实”, “高清”) by decomposed visible properties. The article organizes photographic realism by skin, lighting, pose, clothing, camera, plus targeted exclusions and diverse scenario examples including headphone model, beauty cosmetics, standing/walking/sitting, high/low key studio portraits, eyewear and clothing/background variants.
+1. 从一句简略文字（如年轻女孩佩戴耳机）开始，而不要求参考图片。
+2. 把“漂亮”拆成年龄/脸型/轮廓/发型/眼睛/嘴唇；根据产品定位选择人物。
+3. 把“细腻”拆成真实肤理、毛孔、微差、绒毛，避免过度磨皮。
+4. 把“柔和”拆成光源方向、明暗、亮部高光、暗部阴影过渡。
+5. 把“自然”拆成重心、肩膀、头部、眼神、嘴角、手指，适配站/走/坐。
+6. 把“真实”拆成皮肤/光影/姿态/服装/镜头。
+7. 把“高清”拆成目标成图分辨率、焦段、光圈/景深、焦点位置和画面质量。
+8. 正面描述与必要的反向约束配套；不同场景的镜头和光影写法不同。
+9. 通过可组合的变量将短文字变成完整生图提示词。
 
-**The article is third-party editorial advice.** Its statements that models cannot understand subjective words literally, exact 85mm/f stop/light ratio or 8K strings, and claimed workflow performance should be treated as heuristics, not deterministic facts. The original long prompts/images are not copied into this repository.
+## Skill 自己的工程性安排
 
-## Skill-specific design choices
+- 将文章方法写为可执行 SKILL.md 流程与触发边界。
+- 新写案例、测试、质量评分，不大段转载第三方长提示词。
+- 区分文本层面变具体与生成器实际能否执行；不能许诺文本“8K”直接产生8K像素。
+- 根据已指定商品、年龄、面料与场景设置优先级。
+- 本 Skill 不以参考图为必需输入，不默认做旧图修复。
 
-- Prompt optimization as first-class job, **not** default photoshoot generation.
-- LOCK / EDIT / UNKNOWN preservation.
-- Minimal rewriting and single-variable A/B testing.
-- Child-appropriate skin and clothing-sensitive commercial application.
-- Reference-image role isolation and contradiction detection.
-- Test fixtures, sample rewrites, and text-score rubric.
+## 实验可信度等级
 
-These are design decisions informed by the user's commercial workflow; they are not verbatim claims from the article.
-
-Evidence labels: `source example` vs `editorial inference` vs `verified output`. Do not label text reasoning or a static checker as a generated-image test.
+**文章案例**是作者提供的经验，并非 Skill 的实测；
+**文本静态检查**证明配置、文件和案例数据结构；
+**Codex 行为测试**需真实调用；
+**生图效果**需真实生成并比对。
