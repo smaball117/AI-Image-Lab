@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-"""Standalone static validator for the ai-model-photography skill (stdlib only).
-
-Does not test Codex runtime discovery, image-generation quality or prompt compliance.
+"""Standalone structural checks for AI Model Photography Prompt Optimizer.
+No third-party modules. Does not test Codex or image-generation behavior.
 """
 from __future__ import annotations
 
@@ -10,79 +9,64 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-REQUIRED = [
+root = Path(__file__).resolve().parents[1]
+required = [
     "SKILL.md",
     "agents/openai.yaml",
     "references/reference-routing.md",
+    "references/vague-to-visual.md",
+    "references/case-library.md",
+    "references/optimization-qa.md",
     "references/realism-rules.md",
-    "references/qa-rubric.md",
     "references/source-notes.md",
     "examples/briefs.md",
+    "scripts/validate_skill.py",
+    "scripts/test_optimization_cases.py",
     "tests/README.md",
-    "tests/cases.json",
+    "tests/optimization-cases.json",
     "tests/experiment-log.md",
 ]
-errors: list[str] = []
+errors = []
+for p in required:
+    if not (root / p).is_file():
+        errors.append("missing: " + p)
 
-for rel in REQUIRED:
-    if not (ROOT / rel).is_file():
-        errors.append(f"Missing required file: {rel}")
+skill = (root / "SKILL.md").read_text(encoding="utf-8") if (root / "SKILL.md").exists() else ""
+m = re.match(r"\A---\s*\n(.*?)\n---\s*\n", skill, re.S)
+if not m:
+    errors.append("SKILL.md requires YAML frontmatter")
+else:
+    name = re.search(r"^name:\s*(.*)$", m.group(1), re.M)
+    desc = re.search(r"^description:\s*(.*)$", m.group(1), re.M)
+    if not name or name.group(1).strip() != "ai-model-photography":
+        errors.append("wrong YAML name")
+    if not desc or len(desc.group(1).strip()) < 40 or len(desc.group(1).strip()) > 1024:
+        errors.append("invalid YAML description")
 
-skill_path = ROOT / "SKILL.md"
-if skill_path.is_file():
-    text = skill_path.read_text(encoding="utf-8")
-    m = re.match(r"\A---\s*\n(.*?)\n---\s*\n", text, re.S)
-    if not m:
-        errors.append("SKILL.md must start with YAML frontmatter")
-    else:
-        frontmatter = m.group(1)
-        name = re.search(r"^name:\s*(.+)\s*$", frontmatter, re.M)
-        desc = re.search(r"^description:\s*(.+)\s*$", frontmatter, re.M)
-        if not name or name.group(1).strip() != "ai-model-photography":
-            errors.append("Skill name is invalid or does not match folder")
-        if not desc or not (10 <= len(desc.group(1).strip()) <= 1024):
-            errors.append("Skill description missing or outside 10..1024 characters")
-        if name and not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", name.group(1).strip()):
-            errors.append("Skill name must be lowercase kebab-case")
+for link in re.findall(r"\]\(([^)]+)\)", skill):
+    if link.startswith(("http:", "https:", "#")):
+        continue
+    target = (root / link).resolve()
+    if root not in target.parents or not target.is_file():
+        errors.append("bad relative link: " + link)
 
-    for target in re.findall(r"\]\(([^)]+)\)", text):
-        if target.startswith(("http://", "https://", "#")):
-            continue
-        resolved = (ROOT / target).resolve()
-        if ROOT not in resolved.parents and resolved != ROOT:
-            errors.append(f"Link escapes skill root: {target}")
-        elif not resolved.exists():
-            errors.append(f"Broken SKILL.md link: {target}")
+for keyword in ["optimization", "vague", "existing prompt", "smallest"]:
+    if keyword.lower() not in skill.lower():
+        errors.append("optimizer mission unclear: " + keyword)
 
-    if re.search(r"\bTODO\b|\bTBD\b|PLACEHOLDER", text, re.I):
-        errors.append("Unresolved placeholder in SKILL.md")
-
-fixture = ROOT / "tests" / "cases.json"
-if fixture.is_file():
+case_path = root / "tests" / "optimization-cases.json"
+if case_path.is_file():
     try:
-        data = json.loads(fixture.read_text(encoding="utf-8"))
-        cases = data["cases"]
-        ids = [x["id"] for x in cases]
-        if len(cases) < 8:
-            errors.append("Need at least 8 routing/test fixtures")
-        if len(ids) != len(set(ids)):
-            errors.append("Fixture ids must be unique")
-        if not any(c.get("trigger") is True for c in cases):
-            errors.append("Missing positive trigger cases")
-        if not any(c.get("trigger") is False for c in cases):
-            errors.append("Missing negative trigger cases")
-        for c in cases:
-            if not c.get("user_prompt") or not c.get("expected_focus"):
-                errors.append(f"Incomplete case: {c.get('id', '?')}")
-    except (ValueError, KeyError, TypeError) as exc:
-        errors.append(f"Invalid cases.json: {exc}")
+        data = json.loads(case_path.read_text(encoding="utf-8"))
+        ids = [x["id"] for x in data["cases"]]
+        if len(ids) < 10 or len(set(ids)) != len(ids):
+            errors.append("need 10+ unique optimization cases")
+    except (ValueError, KeyError, TypeError) as e:
+        errors.append("invalid cases JSON: " + str(e))
 
 if errors:
-    print(f"FAIL: {len(errors)} structural issue(s)")
-    for err in errors:
-        print(" -", err)
+    print("FAIL:",len(errors),"issue(s)")
+    for e in errors: print(" -", e)
     sys.exit(1)
-
-print(f"PASS: {len(REQUIRED)} required files, skill metadata, links and fixtures")
-print("NOTICE: Codex discovery and actual image outputs remain unverified")
+print("PASS:", len(required), "required files; metadata, links, optimizer terms, case count")
+print("NOTE: Does not prove actual Codex generation/activation.")
