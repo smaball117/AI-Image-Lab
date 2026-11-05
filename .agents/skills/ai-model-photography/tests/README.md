@@ -1,47 +1,53 @@
-# AI Model Photography: acceptance protocol
+# v0.2: Prompt optimizer evaluation protocol
 
-**Status: unverified for Codex discovery or image quality until a real user-side run is logged.** Static validation is not a substitute for inference tests.
+**Primary goal:** preserve supplied prompts and change vague/contradictory parts, not invent complete new shoots.
 
-## Level 1: deterministic structural inspection
+## Level 1: deterministic checks (Python, no dependencies)
 
-From the `ai-model-photography` folder:
+From the `ai-model-photography` directory:
 
-```bash
+```powershell
 python scripts/validate_skill.py
+python scripts/test_optimization_cases.py
 ```
 
-Checks metadata, required file dependencies, local Markdown links, fixture ids, positive/negative scope and content placeholders. No third-party Python dependencies.
+The first verifies files/frontmatter/links and fixture shape. The second checks **curated golden rewrite examples** for preserved phrases, required details, and forbidden additions. It **does not** generate AI rewrites and cannot prove model quality.
 
-## Level 2: Codex routing and prompt output
+## Level 2: test actual Codex behavior
 
-Install this skill independently in a supported Codex skills directory, restart Codex if not recognized, and run these exact explicit and implicit probes:
+Explicit invocation:
 
-1. Explicit: `$ai-model-photography 图1是客厅沙发，图2是男孩面部，图3是纯棉家居服。保持图1光影，让男孩自然坐在沙发上。给我一段用于 Nano Banana 的3:4中文提示词。`
-2. Implicit: `我想修复参考图人物的塑料皮肤，只改皮肤质感不改衣服和构图。`
-3. Implicit negative: `一瓶精华液的纯产品静物，分析玻璃反射并生成布光提示词。` (this skill should not auto-activate)
-4. Implicit negative: `做一个3D卡通水母头人物IP设计。` (this skill should not auto-activate)
+```text
+$ai-model-photography
+这是我已有的提示词，请你只帮我优化，不要设计新画面：
+"图1是沙发场景，图2是男孩脸，图3是衣服，男孩自然坐着，光线柔和，衣服要有质感。保留图1光影，服装结构和颜色不变。"
+请标注模糊处，再输出最小改写版，最后说明你究竟改了哪些词。
+```
 
-For image-specific cases, attach real images when available. Text-only probes cannot establish image-reference parsing ability.
+Further prompts (run in separate Codex turns; compare with [golden examples](optimization-cases.json)):
 
-Observe and save:
-- Is the skill visible by name?
-- Was it activated for each positive but not unrelated negative task?
-- Did it map the actual image indices without inheriting attributes from the wrong source?
-- Did it honor hard locks, avoid invented props and output only the requested number of images/prompts?
-- Did it include a targeted preflight rather than a wall of redundant negative instructions?
+1. **Skin only**: "保留图1人物、衣服、光线和构图。只有皮肤太塑料，请只优化这一小段提示词。"
+2. **Specificity**: "把漂亮、细腻、柔和、自然、高清五个词拆为不同视觉变量，并解释选择条件，不要写整张照片的完整提示词。"
+3. **Conflict**: "我的原文写了保持图1光影不变又写了新增左侧硬光，帮我指出冲突并给出最小修改。"
+4. **No invention**: "场景图只有沙发，没有床。我的衣服是平针纯棉，不是坑条。不要增加床和罗纹。"
+5. **Non-target**: "我只想从零生成一瓶玻璃精华液商业静物，没有人物。" -> Skill should not auto-trigger.
+6. **Non-target**: "帮我设计20秒TVC动态分镜。" -> Skill should not auto-trigger.
 
-## Level 3: actual generated-image evaluation
+Record whether it found the existing prompt, recognized the intended edit, avoided adding new faces/props/clothing and yielded a **minimal change**.
 
-Pick at least **three** real-user briefs: garment-on-sofa, face-only restoration, and one adult model portrait. Use the intended image model and preserve prompt/image/settings versions where possible. Score with `references/qa-rubric.md`.
+## Level 3: A/B model generation
 
-Run one controlled single-variable repair per failing result, and compare before/after for that dimension. Do not count non-run cases as passed.
+After Codex rewrites have been approved, use the original and optimized prompts on the **same image tool** with same references/settings where possible. First test:
+- age-appropriate skin texture without other changes
+- sofa support/pose without changing outfit
+- face-only restoration keeping background and original lighting
 
-## Acceptance gates
+Record original and optimized prompts, model name/version, image files, visible success/failure, and rollback decisions in `experiment-log.md`. **No run, no PASS**.
 
-- Structural checker passes.
-- Manual Codex discovery/explicit invoke passes.
-- All four routing probes behave as intended.
-- At least 3 evaluated image outputs, no severe identity, wardrobe, or reference-scope failures, and at least 12/14 per output on provisional rubric.
-- Results and failures documented in `tests/experiment-log.md`.
+## Acceptance criteria
 
-If any gate fails, keep the skill on experimental branch and edit only the failed design part. Merge to main only after actual trial evidence.
+- Static checks pass
+- Codex explicit invocation and both positive/negative trigger checks pass
+- For at least five distinct user prompts, optimized output preserves all hard locks and edits only target dimensions
+- Three A/B image trials demonstrate intended improvement without losing correct details
+- Test notes saved; keep branch experimental until all gates passed
