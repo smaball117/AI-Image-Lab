@@ -1,4 +1,4 @@
 interface:
-  display_name: "AI Model Prompt Optimizer"
-  short_description: "Turn vague commercial model prompts into controllable visual instructions"
-  default_prompt: "Use $ai-model-photography to diagnose and minimally optimize my existing AI model photography prompt. Preserve all correct subjects, garments, references, and scene constraints; explain vague-to-observable replacements."
+  display_name: "AI Model Photography"
+  short_description: "Expand vague text into detailed realistic AI model photo prompts"
+  default_prompt: "Use $ai-model-photography to turn my rough one-sentence model-photo idea into a complete high-definition commercial photography prompt using face, skin, lighting, posture, clothing, camera/focus, and negative constraints. No reference image required."
