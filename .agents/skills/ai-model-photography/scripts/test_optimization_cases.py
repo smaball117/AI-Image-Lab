@@ -17,7 +17,7 @@ for case in cases:
     if "reference" in case.get("expected_focus","").lower():
         errors.append(case.get("id","?")+": reference image must not be mandatory")
 examples=(root/"examples/briefs.md").read_text(encoding="utf-8")
-for phrase in ["白色耳机","皮肤细腻","光线柔和","自然站立","高清","双眼","对焦","负"]:
+for phrase in ["白色耳机","皮肤细腻","光线柔和","自然站立","高清","双眼","对焦","避免"]:
     if phrase not in examples:
         errors.append("Full example missing "+phrase)
 if errors:
