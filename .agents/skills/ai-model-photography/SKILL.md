@@ -1,71 +1,76 @@
 ---
 name: ai-model-photography
-description: Improve, debug, and precisely rewrite existing AI commercial model photography prompts. Use when a user brings vague model-prompt language, a long or conflicting prompt, realism problems (skin, pose, garment, camera, lighting), or a failed output and wants prompt optimization, not a newly invented photo concept. Specializes in turning fuzzy aesthetic adjectives into observable, reference-aware instructions while preserving the user's existing subject, outfit, scene, and constraints.
+description: Turn a short, vague AI-model-photo idea or an existing rough prompt into a detailed, executable, realistic commercial photography prompt. Use when the user wants a new high-definition AI-generated person/model photo or wants words like beautiful, delicate skin, soft lighting, natural pose, realistic, or HD translated into age/face/hair, skin texture, lighting direction, body mechanics, wardrobe materials, camera, focus, image quality, and targeted negative constraints. No reference image is required.
 ---
 
-# AI Model Photography | Prompt Optimizer
+# AI 模特商业摄影提示词拆解与优化
 
-**Primary job: improve an existing prompt, not invent a new photoshoot.** Accept the user's original words as the design brief, preserve what is already correct, and translate vague or contradictory phrases into visually testable instructions. The best revision is not necessarily longer: make **the smallest sufficient change**.
+## 核心任务
 
-## Scope and dispatch
+**默认是从文字生成文字：将一句模糊的生图需求或初级提示词，按明确维度拆解、补足、重写为适合生成高清真实模特照片的完整提示词。**
 
-Activate for requests such as:
-- “我的AI模特不真实/皮肤像塑料，帮我优化提示词”
-- “自然一点、精致一点、光线柔和、高清、衣服有质感，这些词如何改”
-- “帮我检查这段AI模特提示词是不是互相打架”
-- “保留图1人物和场景，只把图2面部细节修复到图1，怎么改提示词”
-- “我只想修复姿势/肤色/衣服细节，其他都不改”
+输入可以只有一句话，例如：“年轻漂亮的欧美女孩戴着白色耳机，皮肤细腻，光线柔和，自然站立，真实一点，高清。”
 
-**Do not auto-activate** for a user asking only to create/generate an image without an existing prompt, pure product still life, pure lighting education, video directing, or stylized IP character design. If the user expressly requests creation from scratch, explain that this skill optimizes existing instructions and ask for an existing prompt or work within any supplied brief only when the user authorizes that shift.
+最终交付物是**用来让生图模型生成高清人物照片的提示词**，不是根据用户上传的图片修片、放大、修复高清，也不是调用图像生成工具。**不要要求用户提供参考图；不能把“高清”理解为提高参考图清晰度。**
 
-## Non-negotiable operating rules
+当用户已经写了长提示词：仍按相同维度找出空泛表达、重复、互相矛盾之处，优化全文；保留原来已确定的内容。仅在用户明确提出参考图时，才处理对应参考关系，参考图不是此 Skill 的前置条件。
 
-1. **Input is authoritative.** Preserve user-specified character/age, outfit, product, scene, image-reference roles, framing, and lighting unless they explicitly ask to change them. Never manufacture scene objects, outfit ribbing, hairstyle, smile, precise face geometry, or light positions just to fill a template.
-2. **Diagnose before rewriting.** Identify vague terms, missing operational cues, conflicting instructions, redundant negatives, source-role leaks, and physical inconsistencies. Do not silently "upgrade" all five dimensions.
-3. **Change only implicated dimensions.** “皮肤太假” => skin edits, not a redesigned camera/light/pose. If source light is locked, preserve it.
-4. **Use observable language.** Move from subjective praise (“高级、漂亮、真实、自然、高清”) to age- and scene-appropriate descriptions of visible physical evidence.
-5. **Explicitly preserve known facts, flag unknown facts.** Never present invented specifics as if they came from the user's image or prompt. If an attribute is unknown, use neutral language or a small `[待确认]` field, not an arbitrary complexion, ethnicity, lens, garment weave, or prop.
-6. **No universal formulas.** The source article contains examples like 85mm, f/2.8, 1:2 light ratio, 8K; use only when relevant to requested visual results. They are generative hints, not measured optical/export guarantees.
-7. **Concise exclusions.** Add "don't" statements only where they defend hard constraints or a documented failure. Do not insert generic multi-page negative prompts.
-8. **Article examples are reference patterns, not mandatory templates.** The long portrait examples demonstrate decomposition and style consistency. Extract the **reasoning structure**, not their specific people, colors or accessories.
-9. **No false performance claims.** Only call an optimization "model-tested" after a genuine model run and saved comparison.
+## 触发与边界
 
-## Optimization algorithm
+适用：AI 模特、人像、童装/服装模特、佩戴商品的人物商业摄影；用户从零给出一句简单需求、给出已有初稿，或询问“真实、自然、柔和、细腻、高清”怎样具体写。
 
-1. **Read original prompt literally.** Extract protected invariants and requested changes as `LOCK` / `EDIT` / `UNKNOWN`. If image references are named, route each image to only its authorized role using [reference-routing.md](references/reference-routing.md).
-2. **Mark problematic phrases.** Classify each as:
-   - `VAGUE`: subjective aesthetics without observable outcomes;
-   - `OMISSION`: missing facts needed to execute the stated goal;
-   - `CONFLICT`: mutually incompatible instructions;
-   - `LEAK`: wrong image controlling face/scene/garment;
-   - `PHYSICS`: gravity, contact, light/reflection inconsistencies;
-   - `REDUNDANT`: bloated repetitions, vague “8K/RAW/HD” stacking.
-3. **Choose a minimal edit plan.** Map defects to only relevant dimensions: identity/age, skin, expression/pose, clothing, scene/contact, camera/focus, light/color, quality/constraints. Consult [vague-to-visual.md](references/vague-to-visual.md), [case-library.md](references/case-library.md).
-4. **Rewrite the user's prompt, not the user's concept.** Preserve every correct explicit detail. Replace abstract terms with plausible **observable cues** tied to the task; maintain reference roles, action logic, and output format. Where the original does not supply enough to choose a new artistic direction, do not assert one.
-5. **Consistency check.** Validate lock/edit separation, child/adult appropriateness, fabric and print identity, scene support, focus/crop and lighting continuity. See [optimization-qa.md](references/optimization-qa.md).
-6. **Perform a micro-test plan.** State one controllable experiment based on the user's failure: original vs revised prompt on the same generator and references/settings when possible. If the user supplies before/after images, evaluate only the claimed repaired issue.
+不适用：不含人物的产品纯静物、单独研究布光方法、视频导演、卡通 IP 设计、真正执行生图或真实像素放大。
 
-## Default answer, sized to request
+## 执行流程：先拆解，再组合
 
-For “帮我优化这段提示词”:
+1. **读取用户文字**：提取明确已知的产品、人物年龄/身份、服装、场景、风格、镜头、构图与比例。把这些标成 `已知`；未给的标为 `可合理补足`，不要当成已有事实。
+2. **识别空泛词**：如漂亮、皮肤细腻、柔和、自然、真实、高清、高级。查看 [模糊词转译字典](references/vague-to-visual.md)，将每一词拆为可观察的视觉参数，而非仅堆积极形容词。
+3. **按六个内容维度展开**，顺序与主文一致：
+   1. **人物外貌/产品匹配**：年龄范围、脸型和轮廓、发型、眼睛、嘴唇、气质；若产品类别已知，选择相符合的人设。已有明确身份时严格保留。
+   2. **皮肤真实感**：符合年龄的毛孔/微观肌理、细微自然肤色差异、面部绒毛或细纹；与过度磨皮、塑料感配对限制。不要给儿童套用成年人细纹。
+   3. **光影**：光源方向、光的软硬/形态、适当的明暗/光比描述、高光位置、阴影边缘及暗部处理。按照场景和情绪选择，别把示例“左侧、1:2”写成永远的固定参数。
+   4. **姿态**：依据站姿、行走、坐姿、手持产品等场景，拆成重心、肩、头部、下巴、眼神、嘴角、手指和接触/支撑；避免不符合人体与物体接触的词。
+   5. **服装/产品材质**：颜色、品类、实际面料纹理、垂坠、受力褶皱、与商品的物理互动、重点产品展示；未指定面料时不能擅自把服装写成罗纹。
+   6. **摄影与“高清”**：目标画幅/拍摄景别、焦段意图、光圈/景深意图、对焦位置、希望清晰的具体细节、画质与失败限制。表述为**希望生成画面具有的视觉效果**；文字写“8K/RAW”不代表工具真的导出那种分辨率或格式。
+4. **根据场景适配，不生搬硬套**：参考 [场景与案例](references/case-library.md)，使镜头、光影、人物表情与产品主次统一。如耳机商业广告，耳机与耳部既要清晰又不能被头发遮挡。
+5. **先正面要求，再负面约束**：每个必要维度写“希望看见什么”；最后只写针对风险的“避免什么”。避免无关的冗长否定列表。
+6. **形成可复制的自然语言完整提示词**：推荐顺序 `商业风格/目标 → 人物与产品 → 皮肤 → 姿态与互动 → 场景构图与镜头 → 光影 → 服装/材质 → 聚焦与高清质量 → 精简负面约束`。不必强制按段落排版，逻辑要连贯。
+7. **质量自检**：用 [检查表](references/optimization-qa.md) 排除背景突然变化、产品失焦、年龄/肤质矛盾、布光冲突、手指畸形、误加材质、重复属性。返回可以直接投入模型使用的提示词。
+8. **如果用户有实测结果**：只根据所述失败项调整相应维度，提供优化版与一项 A/B 验证建议；不要宣称未经测试的结果已成功。
 
-**诊断**: 2-5 short points referencing the user's actual phrases, including any genuine contradiction.
+## 模糊词分解的最低要求
 
-**优化后提示词**: one copyable revised version of the user's original prompt, faithfully preserving non-target facts. Do not append an unrelated creative brief.
+| 原词 | 必须考虑的可观察维度 |
+| --- | --- |
+| 漂亮 | 年龄、脸型、轮廓、发型、眼睛、嘴唇；是否与产品气质一致 |
+| 细腻 | 毛孔、肌理、细纹/绒毛、自然色差；避免过度磨皮 |
+| 柔和 | 光源方向、光质/明暗关系、高光位置、阴影过渡 |
+| 自然 | 重心、肩膀、头、眼神、嘴角、手指和支撑关系 |
+| 真实 | 皮肤、光影、姿态、服装、镜头五项同时协调 |
+| 高清 | **目标成图**的分辨率意图、焦段、光圈/景深、对焦位置、细节/噪点/边缘质量 |
 
-**修改说明**: 2-5 `原词 → 可观察表述 → 理由` mappings; if no ungrounded details were added, say so.
+**注意**：这些是“要分析的维度”，不是“给所有人物照无条件追加的具体值”。在初始信息不足时，可根据产品定位和场景作合理设计选择；不能把选择冒充用户已经指定的细节。若用户只要求优化一个词，只拆那个词，不强行输出完整广告片提示词。
 
-**下一轮验证**: one concrete comparison with one change variable, not a claim that generation succeeded.
+## 输出模式
 
-For “只要优化后的提示词”: give only the revised prompt. For “解释哪个词有问题”: analyze and propose alternatives, do not draft a whole image prompt unless explicitly requested. For an empty source prompt: ask the user to paste it, rather than inventing one.
+**默认（用户给一句需求，请优化成完整可生图提示词）**
 
-## References
+1. **维度拆解**：简短表格或有序文字，明确“模糊词 → 拆解后的具体视觉信息”，并指出你补充的人物/镜头/灯光设计选择。
+2. **最终完整提示词**：一段或多段直接复制使用的中文自然语言提示词。要有清晰的生图目标与焦点，不需要任何上传图。
+3. **反向约束**：简洁、针对当次场景。
+4. **为什么这样写**：只解释关键 2-4 处，而不是另做新方案。
 
-- [Vague description -> observable cue dictionary](references/vague-to-visual.md)
-- [Original article case library, transformed into reusable editing patterns](references/case-library.md)
-- [Reference image roles and unchanged-field rules](references/reference-routing.md)
-- [Visual consistency and optimization QA](references/optimization-qa.md)
-- [Additional photography realism notes](references/realism-rules.md)
-- [Source provenance](references/source-notes.md)
-- [Before/after optimization examples](examples/briefs.md)
-- [Behavioral regression protocol](tests/README.md)
+**用户说“只给提示词”**：只给最终提示词（可把必要负向约束放在末尾）。
+
+**用户说“只拆解这句话”**：只给可执行维度，不另编完整场景。
+
+**用户提供已确定的完整提示词**：保留所有已定内容，只补缺失和改模糊部分；除用户特别要求，不改人物身份、商品、色彩和场景。
+
+## 案例入口
+
+- [模糊词 → 可观察视觉维度](references/vague-to-visual.md)
+- [按产品、情绪、动作和镜头分类的案例](references/case-library.md)
+- [三个完整从文字到提示词的示例](examples/briefs.md)
+- [提示词质量检查与实测方法](references/optimization-qa.md)
+- [素材来源与局限](references/source-notes.md)
+- [测试用例和验收方式](tests/README.md)
