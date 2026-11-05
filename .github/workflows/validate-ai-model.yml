@@ -1,8 +1,8 @@
-name: Validate AI Model Prompt Optimizer
+name: Validate AI Model Photography Text-to-Image Skill
 on:
   push:
     branches:
-      - experiment/ai-model-photography-v0.1
+      - experiment/ai-model-photography-v0.3
     paths:
       - '.agents/skills/ai-model-photography/**'
       - '.github/workflows/validate-ai-model.yml'
@@ -19,7 +19,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Validate skill metadata and references
+      - name: Validate skill structure and six-dimension instructions
         run: python .agents/skills/ai-model-photography/scripts/validate_skill.py
-      - name: Test 12 authored before-after regression fixtures
+      - name: Validate authored scenario specifications
         run: python .agents/skills/ai-model-photography/scripts/test_optimization_cases.py
