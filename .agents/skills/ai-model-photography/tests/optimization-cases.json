@@ -1,215 +1,231 @@
 {
-  "schema_version": "2.0",
-  "purpose": "Golden before/after prompt optimization examples. Validate fixed examples only, not AI model behavior.",
+  "schema_version": "3.0",
+  "purpose": "Golden behavior specifications for short-text-to-detailed-model-image prompts. Tests do not invoke Codex or image generation.",
   "cases": [
     {
-      "id": "G01",
-      "input": "保留图1人物和衣服，皮肤细腻真实一点，构图和光线不变。",
-      "optimized": "保留图1人物和衣服、构图与原有光线不变；仅优化皮肤，保留与年龄相符的微观肤理和自然肤色微差，高光与原光线衔接，避免蜡像感。",
-      "must_keep": [
-        "图1",
-        "衣服",
-        "构图",
-        "光线"
+      "id": "T01",
+      "mode": "full_prompt",
+      "input": "一个年轻漂亮的欧美女孩，戴白色耳机，皮肤细腻，光线柔和，自然站立，真实一点，高清。",
+      "expected_dimensions": [
+        "appearance",
+        "skin",
+        "lighting",
+        "pose",
+        "garment_or_product",
+        "camera",
+        "output_quality",
+        "negative_constraints"
       ],
-      "must_include": [
-        "微观肤理",
-        "蜡像感"
+      "must_not": [
+        "request_reference_image",
+        "enhance_existing_image"
       ],
-      "must_avoid": [
-        "85mm",
-        "左侧柔光箱",
-        "重新设计服装"
-      ]
+      "expected_focus": "ears/headphones and eyes clearly readable"
     },
     {
-      "id": "G02",
-      "input": "图1沙发不变，让模特自然坐在沙发上，衣服要展示清楚。",
-      "optimized": "图1沙发不变，让模特臀部由现有坐垫承托、肩膀放松，手臂自然支撑，衣服正面清晰完整，接触处形成自然受力褶皱。",
-      "must_keep": [
-        "沙发",
-        "衣服"
+      "id": "T02",
+      "mode": "full_prompt",
+      "input": "年轻女性耳机广告，高级感高清，背景简单。",
+      "expected_dimensions": [
+        "appearance",
+        "skin",
+        "lighting",
+        "pose",
+        "garment_or_product",
+        "camera",
+        "output_quality"
       ],
-      "must_include": [
-        "承托",
-        "受力褶皱"
+      "must_not": [
+        "mandatory_85mm",
+        "reference_required"
       ],
-      "must_avoid": [
-        "床",
-        "新增转椅"
-      ]
+      "expected_focus": "wearable product and suitable visual tone"
     },
     {
-      "id": "G03",
-      "input": "修复图1女模特面部，光线柔和，原有光影不变。",
-      "optimized": "仅修复图1女模特面部细节，保留原有光影方向、受光面、高光位置和阴影形态，使肤质与原有光影自然衔接。",
-      "must_keep": [
-        "图1",
-        "原有光影"
+      "id": "T03",
+      "mode": "full_prompt",
+      "input": "12岁男孩纯棉家居服，沙发自然坐姿，高清电商照。",
+      "expected_dimensions": [
+        "age_appropriate_skin",
+        "contact_pose",
+        "cotton_fabric",
+        "garment_visibility",
+        "camera",
+        "output_quality"
       ],
-      "must_include": [
-        "高光位置",
-        "衔接"
+      "must_not": [
+        "adult_wrinkles",
+        "ribbed_fabric_without_brief",
+        "image_required"
       ],
-      "must_avoid": [
-        "左侧45°柔光箱",
-        "重设主光"
-      ]
+      "expected_focus": "clothing and face"
     },
     {
-      "id": "G04",
-      "input": "图1童装模特更高清，8K RAW，衣服不变。",
-      "optimized": "保持图1童装模特的衣服不变，重点使原有面料纹理、缝线、领口和印花边缘清晰自然，避免纹理涂抹和过度锐化。",
-      "must_keep": [
-        "图1",
-        "衣服不变"
+      "id": "T04",
+      "mode": "full_prompt",
+      "input": "商务降噪耳机成熟男性，清冷高级，真实高清。",
+      "expected_dimensions": [
+        "product_compatible_appearance",
+        "skin",
+        "lighting",
+        "pose",
+        "earpiece_focus",
+        "output_quality"
       ],
-      "must_include": [
-        "缝线",
-        "印花"
+      "must_not": [
+        "teen_girl_default"
       ],
-      "must_avoid": [
-        "保证输出8K",
-        "强制RAW"
-      ]
+      "expected_focus": "earpiece structure and confident adult"
     },
     {
-      "id": "G05",
-      "input": "成年女性美妆特写，皮肤漂亮细腻。",
-      "optimized": "成年女性美妆特写，保留原有面部识别特征，皮肤呈现年龄相符的细微肤理、局部肤色差异和自然微光泽，避免蜡像磨皮。",
-      "must_keep": [
-        "成年女性",
-        "美妆特写"
+      "id": "T05",
+      "mode": "full_prompt",
+      "input": "20岁女性影棚肖像，皮肤细腻，不要塑料感。",
+      "expected_dimensions": [
+        "natural_skin_microtexture",
+        "age_appropriate_details",
+        "face_focus",
+        "negative_constraints"
       ],
-      "must_include": [
-        "肤理",
-        "肤色差异"
+      "must_not": [
+        "adult_deep_wrinkles",
+        "default_face_reference"
       ],
-      "must_avoid": [
-        "浅金发",
-        "蓝眼"
-      ]
+      "expected_focus": "skin without waxy smoothing"
     },
     {
-      "id": "G06",
-      "input": "图1场景姿势，图2脸，图3衣服。画面自然。",
-      "optimized": "图1仅控制场景姿势和原光影，图2仅控制脸部身份，图3仅控制衣服结构、颜色和纹样；动作与图1物理空间相容，保持自然接触，单张输出。",
-      "must_keep": [
-        "图1",
-        "图2",
-        "图3"
+      "id": "T06",
+      "mode": "full_prompt",
+      "input": "女孩街拍走路自然，有动作感，衣服真实，高清。",
+      "expected_dimensions": [
+        "walking_weight_transfer",
+        "arm_swing",
+        "cloth_inertia",
+        "perspective",
+        "focus",
+        "output_quality"
       ],
-      "must_include": [
-        "仅控制",
-        "单张"
+      "must_not": [
+        "floating_foot"
       ],
-      "must_avoid": [
-        "九宫格排版",
-        "图2背景"
-      ]
+      "expected_focus": "motion without unnatural feet"
     },
     {
-      "id": "G07",
-      "input": "服装街拍，走起来很自然，衣摆有动感。",
-      "optimized": "服装街拍，捕捉一脚承重、另一脚向前迈出的正常步态，双臂轻微反向摆动，衣摆因重心转移产生自然惯性褶皱，脚与地面接触真实。",
-      "must_keep": [
-        "服装街拍",
-        "衣摆"
+      "id": "T07",
+      "mode": "dimension_only",
+      "input": "请只帮我拆解‘高清’这个词怎么写，针对生成的新人物照片。",
+      "expected_dimensions": [
+        "resolution_intent",
+        "lens",
+        "aperture_or_depth",
+        "focus",
+        "image_quality"
       ],
-      "must_include": [
-        "承重",
-        "惯性褶皱"
+      "must_not": [
+        "upscale_reference",
+        "full_storyboard"
       ],
-      "must_avoid": [
-        "跳跃",
-        "悬浮"
-      ]
+      "expected_focus": "final generated photo clarity"
     },
     {
-      "id": "G08",
-      "input": "高反差黑色剪影，脸隐在暗处，光影高级。",
-      "optimized": "保留高反差黑色剪影，脸部主要隐于暗处，轮廓边缘保留克制亮边，暗部仅留最低限度辨识，不新增均匀正面补光。",
-      "must_keep": [
-        "剪影",
-        "暗处"
+      "id": "T08",
+      "mode": "dimension_only",
+      "input": "只解释自然站立应写哪些可执行变量。",
+      "expected_dimensions": [
+        "weight",
+        "shoulder",
+        "head",
+        "gaze",
+        "mouth",
+        "fingers"
       ],
-      "must_include": [
-        "轮廓",
-        "正面补光"
+      "must_not": [
+        "full_new_campaign"
       ],
-      "must_avoid": [
-        "全脸均匀照亮",
-        "暗部必须通透"
-      ]
+      "expected_focus": "pose mechanics"
     },
     {
-      "id": "G09",
-      "input": "图1是我人物，图2是脸九宫格，修复图1脸，其他不变。",
-      "optimized": "图1人物的构图服装姿态和光线保持不变，图2九宫格仅作脸部身份参考，只修复图1的面部，输出单幅照片而非九宫格。",
-      "must_keep": [
-        "图1",
-        "图2"
+      "id": "T09",
+      "mode": "dimension_only",
+      "input": "把温柔治愈、清冷高级、活力元气三个光影风格分别拆解。",
+      "expected_dimensions": [
+        "light_direction",
+        "contrast",
+        "highlight",
+        "shadow"
       ],
-      "must_include": [
-        "仅作脸部",
-        "单幅",
-        "保持不变"
+      "must_not": [
+        "universal_one_to_two_ratio"
       ],
-      "must_avoid": [
-        "生成九宫格"
-      ]
+      "expected_focus": "distinct mood-specific lighting"
     },
     {
-      "id": "G10",
-      "input": "让模特更好看一些，不改变原来的人。",
-      "optimized": "保持模特身份、五官、年龄和发型不变，仅改善现有皮肤边缘的涂抹感、面部光影自然度和眼神光融合，不重塑脸型。",
-      "must_keep": [
-        "不变"
+      "id": "T10",
+      "mode": "full_prompt",
+      "input": "黑色剪影的高反差商业时尚人物，真实高清。",
+      "expected_dimensions": [
+        "lighting",
+        "silhouette",
+        "camera",
+        "quality"
       ],
-      "must_include": [
-        "不重塑脸型",
-        "眼神光"
+      "must_not": [
+        "mandatory_bright_shadows"
       ],
-      "must_avoid": [
-        "金发",
-        "蓝眼"
-      ]
+      "expected_focus": "intentional deep blacks and clean edges"
     },
     {
-      "id": "G11",
-      "input": "图2衣服穿到图1模特身上，有质感原色不变。",
-      "optimized": "图1模特身份及姿态保持不变，图2衣服的颜色、版型、领口、缝线和实际面料纹理保持一致，衣服随人体动作形成自然受力褶皱，不添加原图不存在的罗纹。",
-      "must_keep": [
-        "图1",
-        "图2",
-        "衣服",
-        "颜色"
+      "id": "T11",
+      "mode": "existing_prompt",
+      "input": "人物就是30岁男性，短发黑色，穿黑色西装，背景灰色。帮我把真实和高清写具体。",
+      "expected_dimensions": [
+        "preserve_age_face_outfit_background",
+        "skin",
+        "focus",
+        "quality"
       ],
-      "must_include": [
-        "受力褶皱",
-        "不存在的罗纹"
+      "must_not": [
+        "change_suit",
+        "add_gold_headphones"
       ],
-      "must_avoid": [
-        "粗坑条针织",
-        "换成红色"
-      ]
+      "expected_focus": "retain all explicit facts"
     },
     {
-      "id": "G12",
-      "input": "为什么自然一点没效果，只解释这个词怎么优化，不要写整段生图词。",
-      "optimized": "“自然”必须对应具体对象：坐姿查承托与重心，行走查承重脚，表情查视线与嘴角。先定位失败维度，再替换对应词，不写完整生图提示词。",
-      "must_keep": [
-        "不写",
-        "生图提示词"
+      "id": "T12",
+      "mode": "route_out",
+      "input": "没有人物，只做一瓶玻璃香水的静物特写。",
+      "expected_dimensions": [],
+      "must_not": [
+        "auto_trigger_model_skill"
       ],
-      "must_include": [
-        "承托",
-        "失败维度"
+      "expected_focus": "do not invoke"
+    },
+    {
+      "id": "T13",
+      "mode": "route_out",
+      "input": "帮我把现有低分辨率 JPG 照片无损放大到4000px。",
+      "expected_dimensions": [],
+      "must_not": [
+        "treat_upscale_as_new_model_prompt"
       ],
-      "must_avoid": [
-        "85mm",
-        "3:4竖幅"
-      ]
+      "expected_focus": "outside skill scope"
+    },
+    {
+      "id": "T14",
+      "mode": "full_prompt",
+      "input": "一位成人女性拿着一支透明唇釉，柔和灯光，自然皮肤，清晰产品广告。",
+      "expected_dimensions": [
+        "face_skin",
+        "hand_object_contact",
+        "product_focus",
+        "light_direction",
+        "focus",
+        "output_quality"
+      ],
+      "must_not": [
+        "copy_source_lipgloss_prompt"
+      ],
+      "expected_focus": "product and person are equally physically plausible"
     }
   ]
 }
