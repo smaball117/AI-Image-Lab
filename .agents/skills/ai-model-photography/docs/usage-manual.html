@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="AI 模特商业摄影提示词优化器的离线使用手册：一句模糊描述，变成高质感真实模特生图提示词。">
+<title>AI Model Photography · 使用手册</title>
+<style>
+:root{--ink:#20312f;--sub:#657470;--paper:#f6f5f0;--surface:#fff;--line:#e4e8e3;--accent:#af683e;--mint:#e8f0e9;--dark:#1b3430;--shadow:0 12px 32px rgba(21,45,38,.07)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.75 -apple-system,BlinkMacSystemFont,"Microsoft YaHei","PingFang SC","Noto Sans CJK SC",sans-serif}
+a{color:inherit}h1,h2,h3,p{margin-top:0}h1,h2,h3{line-height:1.35;letter-spacing:-.025em}h1{font-size:clamp(30px,4vw,51px);line-height:1.22}h2{font-size:26px}h3{font-size:18px;margin-bottom:9px}p{margin-bottom:14px}button{font:inherit;cursor:pointer}button:focus-visible,a:focus-visible{outline:3px solid #c98152;outline-offset:3px}
+.page{display:grid;grid-template-columns:248px minmax(0,1fr);max-width:1540px;margin:auto;min-height:100vh}
+.sidebar{position:sticky;top:0;height:100vh;padding:34px 20px;background:#eeeee7;border-right:1px solid #dadfd7}
+.logo{width:42px;height:42px;border-radius:14px;background:var(--dark);display:grid;place-items:center;color:#fff;font-weight:800;font-size:19px;margin-bottom:22px}
+.mini{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);font-weight:700}
+.sidebar h2{font-size:20px;margin:7px 0 9px}.sidebar p{color:var(--sub);font-size:12px;line-height:1.8}
+nav{margin-top:28px;display:grid;gap:6px}nav a{padding:9px 12px;text-decoration:none;font-size:13px;border-radius:8px;color:#465952}nav a:hover{background:#dde5da}
+.side-foot{font-size:12px;color:var(--sub);position:absolute;bottom:25px;left:22px;right:22px;border-top:1px solid #d3d9d1;padding-top:15px}
+main{padding:32px clamp(18px,5vw,70px) 70px;min-width:0;max-width:1180px}
+section{scroll-margin-top:24px;margin:0 0 62px}
+.hero{background:var(--dark);color:#fff;padding:clamp(25px,5vw,58px);border-radius:24px;position:relative;overflow:hidden;min-height:350px;display:flex;align-items:center}
+.hero::before{content:"";position:absolute;right:-85px;bottom:-260px;width:570px;height:570px;border:1px solid rgba(216,231,216,.25);border-radius:50%;box-shadow:0 0 0 53px rgba(226,235,219,.03),0 0 0 106px rgba(226,235,219,.04)}
+.hero-inner{position:relative;max-width:720px}.hero h1{margin:13px 0 20px}.hero p{font-size:16px;color:#d9e8e1;max-width:640px}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:25px}.tag{border:1px solid #5a7269;color:#e0ede6;border-radius:999px;padding:5px 12px;font-size:12px}
+.card{background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:16px;padding:23px;min-width:0}
+.lead{color:var(--sub);margin:9px 0 26px;max-width:760px}
+.sec-head{margin-bottom:23px}.sec-head .mini{margin-bottom:7px}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.step-num{width:32px;height:32px;border:1px solid #d5ddd6;border-radius:9px;display:grid;place-items:center;font-size:13px;font-weight:700;margin-bottom:18px;background:#eef3ee;color:#2e5245}.step p{font-size:13px;color:var(--sub);margin:0}
+.example{display:grid;grid-template-columns:1fr 1.2fr;gap:14px;align-items:stretch}.example .label{font-size:11px;color:var(--accent);letter-spacing:.08em;font-weight:800;margin-bottom:12px}.quote{font-size:19px;font-weight:600;line-height:1.8;letter-spacing:-.02em}.after{background:#eef3ee;border-color:#d6e1d9}.after p{font-size:14px}
+.funnel{display:flex;align-items:center;gap:14px;margin:16px 0 23px;color:var(--sub);font-size:12px}.funnel span{display:inline-block;border:1px solid var(--line);background:#fff;border-radius:99px;padding:3px 12px}.funnel i{font-style:normal;color:var(--accent)}
+.dims{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.dim-index{font-size:12px;color:var(--accent);font-weight:700;margin-bottom:9px}.dim p{font-size:13px;color:var(--sub);margin:0}.dim strong{font-size:16px}
+.note{background:#f2eee6;border-left:3px solid #c5875c;padding:17px 20px;border-radius:0 12px 12px 0;color:#67553f;font-size:14px}
+.switches{display:flex;flex-wrap:wrap;gap:9px;margin-bottom:16px}.pill{border:1px solid var(--line);border-radius:99px;background:#fff;color:var(--ink);padding:8px 16px;font-size:13px}.pill.active{background:var(--dark);border-color:var(--dark);color:#fff}
+.code-wrap{border-radius:14px;overflow:hidden;background:#1f302d;color:#e8eee8;border:1px solid #354d44}.code-top{display:flex;align-items:center;justify-content:space-between;padding:12px 17px;border-bottom:1px solid #3b4e45;color:#afc1b6;font-size:12px}.copy{background:#eef3ee;color:#25453a;border:1px solid #c1d0c5;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:650}.copy:hover{background:#dfeade}.code-top .copy{background:#3c5a4e;color:#fff;border-color:#5d796c}.code-top .copy:hover{background:#507262}pre{margin:0;padding:19px 20px;white-space:pre-wrap;overflow-wrap:anywhere;font-size:13px;line-height:1.9;font-family:"Microsoft YaHei","PingFang SC",monospace;max-height:400px;overflow:auto}
+.quick-table{width:100%;border-collapse:collapse;font-size:13px;line-height:1.7;background:#fff;border-radius:12px;overflow:hidden}.quick-table th,.quick-table td{padding:14px 15px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.quick-table th{background:#edf1ed;color:#3c5f52}.quick-table td:nth-child(2){font-weight:650}.quick-table tr:last-child td{border-bottom:0}
+.good{color:#357355;font-weight:700}.neutral{color:#aa7447;font-weight:700}
+.faq{display:grid;gap:10px}.faq details{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 17px}.faq summary{cursor:pointer;font-weight:700}.faq details p{margin:12px 0 0;color:var(--sub);font-size:13px}
+.footer{border-top:1px solid var(--line);padding-top:22px;font-size:12px;color:var(--sub)}.footer a{color:#4e725f}
+.checks{display:grid;gap:10px}.check{background:#fff;border:1px solid var(--line);border-radius:11px;padding:11px 14px;display:flex;gap:10px;align-items:baseline;font-size:13px}.check:before{content:"✓";color:#46815e;font-weight:900}
+@media(max-width:1000px){.page{grid-template-columns:1fr}.sidebar{position:static;height:auto;border:0;padding:18px 22px}.sidebar .logo{display:inline-grid;vertical-align:middle;margin:0 10px 0 0;width:32px;height:32px;border-radius:10px}.sidebar h2{display:inline;font-size:16px}.sidebar p,.side-foot{display:none}nav{display:flex;overflow:auto;gap:8px;margin:12px 0 0;white-space:nowrap}nav a{background:#fff;border:1px solid var(--line)}main{margin:auto;width:100%;padding:24px 22px 60px}.hero{min-height:300px}}
+@media(max-width:680px){.steps,.dims,.example{grid-template-columns:1fr}.hero{min-height:270px}.hero::before{right:-380px}.quick-table th,.quick-table td{padding:10px 8px;font-size:12px}.card{padding:18px}.funnel{flex-wrap:wrap}}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="page">
+<aside class="sidebar">
+  <div class="logo" aria-hidden="true">M</div><h2>AI Model Photography</h2>
+  <p>文字 → 专业商业模特摄影提示词<br>独立使用手册 · 离线可打开</p>
+  <nav aria-label="目录">
+    <a href="#start">01 · 三步开始</a>
+    <a href="#example">02 · 一句话如何变专业</a>
+    <a href="#method">03 · 六个核心维度</a>
+    <a href="#commands">04 · 一键复制指令</a>
+    <a href="#install">05 · 安装与验收</a>
+    <a href="#faq">06 · 常见问题</a>
+  </nav>
+  <div class="side-foot">AI-Image-Lab · Chat 研究阶段总结<br>无外部资源依赖</div>
+</aside>
+<main>
+  <section class="hero" aria-labelledby="hero-title">
+    <div class="hero-inner">
+      <div class="mini" style="color:#dfb18c">AI-IMAGE-LAB / USER GUIDE</div>
+      <h1 id="hero-title">你的模糊想法，<br>变成专业的模特摄影语言。</h1>
+      <p>你只需要说“18岁韩国少女，卷发，手里拿唇釉，真实高清”。Skill 会梳理人物、镜头、光影、姿态、商品和画质，输出能直接用于 AI 生图的中文提示词。</p>
+      <div class="tags"><span class="tag">不需要参考图</span><span class="tag">默认只给一版</span><span class="tag">不强制 A/B 实验</span><span class="tag">不自动生成图片</span></div>
+    </div>
+  </section>
+  <section id="start">
+    <div class="sec-head"><div class="mini">QUICK START</div><h2>三步就能使用</h2><p class="lead">先让 Skill 帮你写对，再去 Nano Banana Pro、即梦或其他工具生成照片。无需先学摄影术语。</p></div>
+    <div class="steps">
+      <article class="card step"><div class="step-num">01</div><h3>说出一句话</h3><p>年龄、发型、动作、拿什么商品、希望什么感觉。哪怕只有十几个字也可以。</p></article>
+      <article class="card step"><div class="step-num">02</div><h3>让 Skill 优化</h3><p>补足镜头、光影、姿态、产品接触与画质，不随意更改你指定的东西。</p></article>
+      <article class="card step"><div class="step-num">03</div><h3>复制并生图</h3><p>获得完整中文生图提示词，复制到你日常使用的 AI 生图工具即可。</p></article>
+    </div>
+  </section>
+  <section id="example">
+    <div class="sec-head"><div class="mini">BEFORE & AFTER</div><h2>一句话，到底会被优化成什么？</h2></div>
+    <div class="example">
+      <div class="card"><div class="label">原始描述 / BEFORE</div><div class="quote">18岁韩国少女，卷发，手拿一支唇釉。<br>好看、自然、柔和、高清。</div><p style="color:var(--sub);font-size:13px;margin-top:24px">问题：表情、动作、焦点、光线和商品展示都还不够具体。</p></div>
+      <div class="card after"><div class="label">优化方向 / AFTER</div><p><strong>人物：</strong>18岁韩国女性，清新自然的少女感，深棕卷发。</p><p><strong>镜头：</strong>3:4头肩近景，眼睛与唇釉清楚可读。</p><p><strong>光影：</strong>左前上方大面积柔光，颧骨与唇釉表面有自然高光。</p><p><strong>姿态：</strong>轻松握持瓶身，产品完整可见，不遮挡双唇。</p><p><strong>质感：</strong>适龄自然肤质，简洁背景，清晰发丝和产品轮廓。</p></div>
+    </div>
+    <div class="funnel"><span>模糊表达</span><i>→</i><span>摄影变量</span><i>→</i><span>完整可复制提示词</span></div>
+    <div class="note">研究经验：已经观察到“明确控制背景”对于耳机商业肖像的主体突出有帮助；而继续堆毛孔细节、固定主体百分比、复杂手指动作，在本轮 Chat 观察中并没有明显增加收益。</div>
+  </section>
+  <section id="method">
+    <div class="sec-head"><div class="mini">SIX DIMENSIONS</div><h2>文章里的六个核心转译维度</h2><p class="lead">不是把每个词都无限加长，而是给 AI 一个能被看见、能被判断的画面目标。</p></div>
+    <div class="dims">
+      <div class="card dim"><div class="dim-index">01 / APPEARANCE</div><h3>漂亮 → 人物特征</h3><p>年龄、脸型、发型、眉眼、唇形与产品定位匹配。</p></div>
+      <div class="card dim"><div class="dim-index">02 / SKIN</div><h3>细腻 → 自然肤质</h3><p>符合年龄的真实皮肤层次，避免蜡像磨皮；无需强制写满毛孔清单。</p></div>
+      <div class="card dim"><div class="dim-index">03 / LIGHTING</div><h3>柔和 → 具体光影</h3><p>光从哪里来、亮在哪里、阴影怎样过渡。</p></div>
+      <div class="card dim"><div class="dim-index">04 / POSE</div><h3>自然 → 身体语言</h3><p>重心、肩颈、眼神、手部与商品接触合理。</p></div>
+      <div class="card dim"><div class="dim-index">05 / REALISM</div><h3>真实 → 整体协调</h3><p>服装材质、人体支撑、产品结构、光线与透视协调。</p></div>
+      <div class="card dim"><div class="dim-index">06 / IMAGE QUALITY</div><h3>高清 → 清晰目标</h3><p>明确景别、焦点、景深和细节；实际像素由生图工具设置决定。</p></div>
+    </div>
+  </section>
+  <section id="commands">
+    <div class="sec-head"><div class="mini">COPY & USE</div><h2>直接复制，开始使用</h2><p class="lead">三个常用场景，点击标签即可切换。下方复制按钮会复制当前指令。</p></div>
+    <div class="switches" role="group" aria-label="切换指令">
+      <button class="pill active" type="button" data-mode="basic" aria-pressed="true">一句话模糊需求</button>
+      <button class="pill" type="button" data-mode="polish" aria-pressed="false">优化已有长提示词</button>
+      <button class="pill" type="button" data-mode="local" aria-pressed="false">只修改一个问题</button>
+    </div>
+    <div class="code-wrap">
+      <div class="code-top"><span id="cmd-title">基本用法</span><button class="copy" type="button" id="copy-cmd">复制指令</button></div>
+      <pre id="cmd-text">$ai-model-photography
+18岁韩国少女，卷发，手里拿一支唇釉，写实高清美妆广告。
+帮我优化成一段可以直接复制使用的完整中文生图提示词。
+不要要求参考图，也不要额外设计无关的道具。</pre>
+    </div>
+  </section>
+  <section id="install">
+    <div class="sec-head"><div class="mini">INSTALL & CHECK</div><h2>只安装一次，做一次简单验收</h2><p class="lead">建议先确认候选版通过一次 Codex 调用，再进入日常使用，不需要反复升级、卸载。</p></div>
+    <div class="card">
+      <h3>Windows / Codex</h3>
+      <p>将完整的 <code>ai-model-photography</code> 文件夹放到 <code>%USERPROFILE%\.agents\skills\ai-model-photography</code>。已装旧版时先备份，不要让多个同名 Skill 同时被发现。</p>
+      <p>下方 PowerShell 用于从仓库的候选分支下载并复制，执行前请确认电脑有 Git。</p>
+      <div class="code-wrap">
+        <div class="code-top"><span>PowerShell · 一次性安装（自动备份同位置旧版）</span><button type="button" class="copy" id="copy-install">复制安装命令</button></div>
+        <pre id="install-cmd">$repo = Join-Path $env:TEMP 'AI-Image-Lab-ready'
+$dest = Join-Path $HOME '.agents\skills\ai-model-photography'
+if (Test-Path $repo) { throw '临时目录已存在，请更换名称' }
+git clone --depth 1 --branch experiment/ai-model-photography-v0.3 https://github.com/smaball117/AI-Image-Lab.git $repo
+New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
+if (Test-Path $dest) {
+  $backup = "$dest.backup-$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+  Move-Item $dest $backup
+  Write-Host "旧版备份：$backup"
+}
+Copy-Item (Join-Path $repo '.agents\skills\ai-model-photography') $dest -Recurse
+Write-Host "完成：$dest"</pre>
+      </div>
+      <p style="color:var(--sub);font-size:13px;margin:20px 0 10px">重新打开 Codex，对话中使用上面的基本指令，检查这四项：</p>
+      <div class="checks">
+        <div class="check">保留18岁、韩国少女、卷发、唇釉四项核心需求。</div>
+        <div class="check">输出一段可直接复制的完整中文生图提示词。</div>
+        <div class="check">镜头、光影、姿态、产品可见性、真实质感都有具体描述。</div>
+        <div class="check">不要求参考图，不虚构品牌，不把“高清”理解成修旧照片。</div>
+      </div>
+    </div>
+  </section>
+  <section id="faq">
+    <div class="sec-head"><div class="mini">FAQ</div><h2>遇到这些情况怎么办？</h2></div>
+    <div class="faq">
+      <details><summary>一定要上传参考图吗？</summary><p>不用。这个 Skill 默认通过文字优化提示词，只有你主动给参考资料时才使用。</p></details>
+      <details><summary>会自动替我生成照片吗？</summary><p>不会。它输出提示词，你把结果复制到 Nano Banana Pro、即梦等生图工具。</p></details>
+      <details><summary>为什么没有一大堆“毛孔、8K、85mm、f/2.8”？</summary><p>这些不是所有照片必需的固定词。Chat 中皮肤细化与主体50%/70%实验差异不明显；我们把精力集中到整体画面、人物与产品关系。</p></details>
+      <details><summary>能不能只帮我改动作，不换原来的人？</summary><p>可以。在原提示词后加“只优化动作和产品握持，其他全部保持不变”。</p></details>
+      <details><summary>童装也适用吗？</summary><p>适用。明确年龄、衣服材质、展示重点即可；规则会避免不必要的成人化肤质与误加面料工艺。</p></details>
+      <details><summary>如果产品要一模一样怎么办？</summary><p>需要你提供产品真实信息或自行提供参考。没有包装信息时，Skill 只会写通用品类，不会捏造品牌标签。</p></details>
+    </div>
+  </section>
+  <footer class="footer">AI-Image-Lab · Prompt Optimizer · 研究方法基于《AI模特的真实感如何做到》，经验记录来自本次 Chat 讨论。<br>相关资料：<a href="../SKILL.md">SKILL.md</a> · <a href="../examples/briefs.md">完整示例</a> · <a href="../references/field-notes.md">经验记录</a> · <a href="USAGE.md">Markdown 手册</a></footer>
+</main>
+</div>
+<script>
+(function(){
+  'use strict';
+  const commands={
+    basic:`$ai-model-photography
+18岁韩国少女，卷发，手里拿一支唇釉，写实高清美妆广告。
+帮我优化成一段可以直接复制使用的完整中文生图提示词。
+不要要求参考图，也不要额外设计无关的道具。`,
+    polish:`$ai-model-photography
+请优化下面这段已有生图提示词，保持人物年龄、发型、
+服装、商品、背景与画幅不变。
+把模糊的摄影描述写具体，消除矛盾，给我最终可复制的一版。
+[在这里粘贴你的原提示词]`,
+    local:`$ai-model-photography
+我已经生成过了，人物和整体画面不错，但手拿商品的动作很假。
+请只优化姿态和持物接触，其他人物、光影、背景、服装不变。
+[在这里粘贴你的原提示词]`
+  };
+  const titles={basic:'基本用法',polish:'保留原提示词框架',local:'单点修复'};
+  const output=document.getElementById('cmd-text');
+  const title=document.getElementById('cmd-title');
+  document.querySelectorAll('[data-mode]').forEach(button=>{
+    button.addEventListener('click',()=>{
+      const m=button.dataset.mode;
+      output.textContent=commands[m];
+      title.textContent=titles[m];
+      document.querySelectorAll('[data-mode]').forEach(b=>{b.classList.toggle('active',b===button);b.setAttribute('aria-pressed',String(b===button))});
+    });
+  });
+  async function copy(text,button){
+    let ok=false;
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      try{await navigator.clipboard.writeText(text);ok=true}catch(e){}
+    }
+    if(!ok){
+      const area=document.createElement('textarea');area.value=text;area.style.position='fixed';area.style.opacity='0';
+      document.body.appendChild(area);area.select();
+      try{ok=document.execCommand('copy')}catch(e){}
+      area.remove();
+    }
+    const old=button.textContent;button.textContent=ok?'已复制':'请选择文字手动复制';
+    setTimeout(()=>button.textContent=old,2000);
+  }
+  document.getElementById('copy-cmd').addEventListener('click',function(){copy(output.textContent,this)});
+  document.getElementById('copy-install').addEventListener('click',function(){copy(document.getElementById('install-cmd').textContent,this)});
+})();
+</script>
+</body>
+</html>

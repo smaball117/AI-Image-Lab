@@ -1,0 +1,231 @@
+{
+  "schema_version": "3.0",
+  "purpose": "Golden behavior specifications for short-text-to-detailed-model-image prompts. Tests do not invoke Codex or image generation.",
+  "cases": [
+    {
+      "id": "T01",
+      "mode": "full_prompt",
+      "input": "一个年轻漂亮的欧美女孩，戴白色耳机，皮肤细腻，光线柔和，自然站立，真实一点，高清。",
+      "expected_dimensions": [
+        "appearance",
+        "skin",
+        "lighting",
+        "pose",
+        "garment_or_product",
+        "camera",
+        "output_quality",
+        "negative_constraints"
+      ],
+      "must_not": [
+        "request_reference_image",
+        "enhance_existing_image"
+      ],
+      "expected_focus": "ears/headphones and eyes clearly readable"
+    },
+    {
+      "id": "T02",
+      "mode": "full_prompt",
+      "input": "年轻女性耳机广告，高级感高清，背景简单。",
+      "expected_dimensions": [
+        "appearance",
+        "skin",
+        "lighting",
+        "pose",
+        "garment_or_product",
+        "camera",
+        "output_quality"
+      ],
+      "must_not": [
+        "mandatory_85mm",
+        "reference_required"
+      ],
+      "expected_focus": "wearable product and suitable visual tone"
+    },
+    {
+      "id": "T03",
+      "mode": "full_prompt",
+      "input": "12岁男孩纯棉家居服，沙发自然坐姿，高清电商照。",
+      "expected_dimensions": [
+        "age_appropriate_skin",
+        "contact_pose",
+        "cotton_fabric",
+        "garment_visibility",
+        "camera",
+        "output_quality"
+      ],
+      "must_not": [
+        "adult_wrinkles",
+        "ribbed_fabric_without_brief",
+        "image_required"
+      ],
+      "expected_focus": "clothing and face"
+    },
+    {
+      "id": "T04",
+      "mode": "full_prompt",
+      "input": "商务降噪耳机成熟男性，清冷高级，真实高清。",
+      "expected_dimensions": [
+        "product_compatible_appearance",
+        "skin",
+        "lighting",
+        "pose",
+        "earpiece_focus",
+        "output_quality"
+      ],
+      "must_not": [
+        "teen_girl_default"
+      ],
+      "expected_focus": "earpiece structure and confident adult"
+    },
+    {
+      "id": "T05",
+      "mode": "full_prompt",
+      "input": "20岁女性影棚肖像，皮肤细腻，不要塑料感。",
+      "expected_dimensions": [
+        "natural_skin_microtexture",
+        "age_appropriate_details",
+        "face_focus",
+        "negative_constraints"
+      ],
+      "must_not": [
+        "adult_deep_wrinkles",
+        "default_face_reference"
+      ],
+      "expected_focus": "skin without waxy smoothing"
+    },
+    {
+      "id": "T06",
+      "mode": "full_prompt",
+      "input": "女孩街拍走路自然，有动作感，衣服真实，高清。",
+      "expected_dimensions": [
+        "walking_weight_transfer",
+        "arm_swing",
+        "cloth_inertia",
+        "perspective",
+        "focus",
+        "output_quality"
+      ],
+      "must_not": [
+        "floating_foot"
+      ],
+      "expected_focus": "motion without unnatural feet"
+    },
+    {
+      "id": "T07",
+      "mode": "dimension_only",
+      "input": "请只帮我拆解‘高清’这个词怎么写，针对生成的新人物照片。",
+      "expected_dimensions": [
+        "resolution_intent",
+        "lens",
+        "aperture_or_depth",
+        "focus",
+        "image_quality"
+      ],
+      "must_not": [
+        "upscale_reference",
+        "full_storyboard"
+      ],
+      "expected_focus": "final generated photo clarity"
+    },
+    {
+      "id": "T08",
+      "mode": "dimension_only",
+      "input": "只解释自然站立应写哪些可执行变量。",
+      "expected_dimensions": [
+        "weight",
+        "shoulder",
+        "head",
+        "gaze",
+        "mouth",
+        "fingers"
+      ],
+      "must_not": [
+        "full_new_campaign"
+      ],
+      "expected_focus": "pose mechanics"
+    },
+    {
+      "id": "T09",
+      "mode": "dimension_only",
+      "input": "把温柔治愈、清冷高级、活力元气三个光影风格分别拆解。",
+      "expected_dimensions": [
+        "light_direction",
+        "contrast",
+        "highlight",
+        "shadow"
+      ],
+      "must_not": [
+        "universal_one_to_two_ratio"
+      ],
+      "expected_focus": "distinct mood-specific lighting"
+    },
+    {
+      "id": "T10",
+      "mode": "full_prompt",
+      "input": "黑色剪影的高反差商业时尚人物，真实高清。",
+      "expected_dimensions": [
+        "lighting",
+        "silhouette",
+        "camera",
+        "quality"
+      ],
+      "must_not": [
+        "mandatory_bright_shadows"
+      ],
+      "expected_focus": "intentional deep blacks and clean edges"
+    },
+    {
+      "id": "T11",
+      "mode": "existing_prompt",
+      "input": "人物就是30岁男性，短发黑色，穿黑色西装，背景灰色。帮我把真实和高清写具体。",
+      "expected_dimensions": [
+        "preserve_age_face_outfit_background",
+        "skin",
+        "focus",
+        "quality"
+      ],
+      "must_not": [
+        "change_suit",
+        "add_gold_headphones"
+      ],
+      "expected_focus": "retain all explicit facts"
+    },
+    {
+      "id": "T12",
+      "mode": "route_out",
+      "input": "没有人物，只做一瓶玻璃香水的静物特写。",
+      "expected_dimensions": [],
+      "must_not": [
+        "auto_trigger_model_skill"
+      ],
+      "expected_focus": "do not invoke"
+    },
+    {
+      "id": "T13",
+      "mode": "route_out",
+      "input": "帮我把现有低分辨率 JPG 照片无损放大到4000px。",
+      "expected_dimensions": [],
+      "must_not": [
+        "treat_upscale_as_new_model_prompt"
+      ],
+      "expected_focus": "outside skill scope"
+    },
+    {
+      "id": "T14",
+      "mode": "full_prompt",
+      "input": "一位成人女性拿着一支透明唇釉，柔和灯光，自然皮肤，清晰产品广告。",
+      "expected_dimensions": [
+        "face_skin",
+        "hand_object_contact",
+        "product_focus",
+        "light_direction",
+        "focus",
+        "output_quality"
+      ],
+      "must_not": [
+        "copy_source_lipgloss_prompt"
+      ],
+      "expected_focus": "product and person are equally physically plausible"
+    }
+  ]
+}
