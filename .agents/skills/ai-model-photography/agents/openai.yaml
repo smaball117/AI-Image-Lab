@@ -1,4 +1,4 @@
 interface:
-  display_name: "AI Model Photography"
-  short_description: "Expand vague text into detailed realistic AI model photo prompts"
-  default_prompt: "Use $ai-model-photography to turn my rough one-sentence model-photo idea into a complete high-definition commercial photography prompt using face, skin, lighting, posture, clothing, camera/focus, and negative constraints. No reference image required."
+  display_name: "AI 模特提示词优化器"
+  short_description: "把模糊描述变成高清真实的商业模特生图提示词"
+  default_prompt: "使用 $ai-model-photography 优化下面这句模糊的模特生图需求，按商业摄影逻辑写出一段可直接复制的完整中文提示词，不需要参考图，不做图片生成："
