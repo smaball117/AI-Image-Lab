@@ -6,6 +6,12 @@ on:
     paths:
       - '.agents/skills/ai-model-photography/**'
       - '.github/workflows/validate-ai-model.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - '.agents/skills/ai-model-photography/**'
+      - '.github/workflows/validate-ai-model.yml'
   workflow_dispatch:
 
 permissions:
