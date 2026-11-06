@@ -1,65 +1,49 @@
 # AI-Image-Lab
 
-**三个独立的 Codex Skills，将分别开发、测试与发布；本仓库不是单个巨大 Skill。**
+面向商业视觉生产的独立 AI Skills 实验室。每个 Skill **单独安装、单独使用**，不合并成大而全的总控 Skill。
 
-## 当前 Skill 合集
+## AI Model Photography · 模特提示词优化器
 
-| Skill | 功能 | 状态 |
-| --- | --- | --- |
-| [ai-model-photography](.agents/skills/ai-model-photography/SKILL.md) | **从一句模糊文字生图需求/初稿，拆成外貌、皮肤、光影、姿态、服装、镜头及高清质量，组合成完整的 AI 模特商业摄影提示词。** | v0.3 实验中 |
-| commercial-image-reverse-engineer | 商业图片反推与分析（独立技能） | 后续迁移 |
-| lighting-and-shadow | 光影分析及设计（独立技能） | 后续开发 |
+当前在 **`experiment/ai-model-photography-v0.3`** 分支，已把 Chat 中的研究方法与用户实测反馈整理为**候选正式版**。无须重新开始 A/B，先完成一次实际 Codex 调用验收即可。
 
-> **无需上传参考图。** 第一个 Skill 的默认用法是“文字短提示词 → 更具体的文字生图提示词”。它不要求修复输入图片。“高清”明确指**最终新生成的模特照片**的目标画质、焦点与细节。
+| 资源 | 作用 |
+| --- | --- |
+| [📖 Markdown 使用手册](.agents/skills/ai-model-photography/docs/USAGE.md) | 安装、使用和常见问题 |
+| [🖥️ HTML 图文使用手册](.agents/skills/ai-model-photography/docs/usage-manual.html) | 可下载浏览器离线打开，有复制指令按钮 |
+| [技能主文件](.agents/skills/ai-model-photography/SKILL.md) | AI Agent 实际执行的提示词优化流程 |
+| [完整提示词案例](.agents/skills/ai-model-photography/examples/briefs.md) | 18岁韩国卷发少女持唇釉、耳机青年模特、童装男孩 |
+| [研究经验](.agents/skills/ai-model-photography/references/field-notes.md) | 四轮主要反馈与证据边界 |
+| [一次性验收](.agents/skills/ai-model-photography/tests/README.md) | Codex 能否正确发现与调用 |
 
-## 第一个 Skill 的能力
+### 这个 Skill 做什么
 
-1. **漂亮** → 年龄/脸型/轮廓/发型/眉眼/唇形，匹配产品定位。
-2. **细腻** → 适龄毛孔/肤理/细微色差/面部绒毛，避免蜡像磨皮。
-3. **柔和** → 光源方向/明暗关系/高光位置/阴影过渡。
-4. **自然** → 重心/肩膀/头部/视线/嘴角/手指和身体支撑。
-5. **真实** → 皮肤+光影+姿态+服装材质+镜头相互统一。
-6. **高清** → 目标生成分辨率意图/焦段/景深/对焦部位/画质细节及负面约束。
+**用户给一句模糊描述，输出一段能直接用于 AI 生图的中文提示词。** 按原文章的方法，从人物、镜头、光影、肤质、姿态、材质、高清画质等维度补充具体可见信息。
 
-依据：[用户提供的站酷研究文章](https://www.zcool.com.cn/work/ZNzQxMzAyODQ=.html)。已按方法重新撰写 Skill，不直接复制作者长提示词。
-
-## 在 Windows Codex 独立安装 v0.3 实验 Skill
-
-PowerShell（需 Git 与 Python）：
-
-```powershell
-$repo = Join-Path $env:TEMP 'AI-Image-Lab-v03'
-$dest = Join-Path $HOME '.agents\skills\ai-model-photography'
-if (Test-Path $repo) { throw "Temporary clone directory exists; choose a new path." }
-if (Test-Path $dest) { throw "Existing skill found. Back up and compare versions before replacing." }
-git clone --depth 1 --branch experiment/ai-model-photography-v0.3 https://github.com/smaball117/AI-Image-Lab.git $repo
-New-Item -ItemType Directory -Force -Path (Split-Path $dest) | Out-Null
-Copy-Item -Recurse -Path (Join-Path $repo '.agents\skills\ai-model-photography') -Destination $dest
-python (Join-Path $dest 'scripts\validate_skill.py')
-python (Join-Path $dest 'scripts\test_optimization_cases.py')
-```
-
-仅安装 `ai-model-photography`，不会安装其他两个 Skill。若已有 v0.1/v0.2，请先备份，再按版本更新。重新启动 Codex 确保发现新 Skill。
-
-## 首个必须通过的 Codex 测试
+例如：
 
 ```text
 $ai-model-photography
-请按“漂亮→人物五官、细腻→肤理、柔和→光影、
-自然→身体姿态、真实→皮肤光影服装镜头、
-高清→生成照片的焦点与细节”逐项拆解，并将这句文字扩写成
-能直接用来生成高清商业人像的完整提示词：
-
-“一个年轻漂亮的欧美女孩，戴着白色耳机，皮肤细腻，
-光线柔和，自然站立，真实一点，高清。”
-
-不要让我上传参考图。高清指新生成的照片，不是修复原图。
+18岁韩国少女，卷发，手拿一支唇釉。
+模特真实好看，高级美妆广告，光线柔和，高清。
+帮我优化成一段完整、可以直接复制的中文生图提示词。
 ```
 
-请对照 [三个完整文字案例](.agents/skills/ai-model-photography/examples/briefs.md)、[测试协议](.agents/skills/ai-model-photography/tests/README.md) 验收。**文件结构检查通过不代表 Codex 已调用、也不代表生成照片达到高清。**
+无需参考图。不默认生成图片、修复旧图、放大照片或不断要求 A/B 实验。优先整体画面与产品焦点，不堆微观毛孔词、固定百分比和复杂手指动作。
 
-## 版本保护
+### 不同 Skill 的分工
 
-- `main` 保持不变。
-- 当前 v0.3 实验分支为 `experiment/ai-model-photography-v0.3`。
-- 只有完成 Codex 实际调用和生图 A/B 测试后才考虑合并正式版。
+| Skill | 功能 | 进度 |
+| --- | --- | --- |
+| [ai-model-photography](.agents/skills/ai-model-photography/SKILL.md) | **从模糊文字生图需求优化为高质感 AI 模特摄影提示词** | 候选正式版 |
+| commercial-image-reverse-engineer | 商业图片解析与反推（独立技能，不混入本技能） | 后续整理 |
+| lighting-and-shadow | 专项布光和光影分析（独立技能） | 后续开发 |
+
+### 安装
+
+参照 [使用手册](.agents/skills/ai-model-photography/docs/USAGE.md#3-windows-上仅安装一次)。Windows Codex 的用户级 Skills 目录按当前文档使用 `%USERPROFILE%\.agents\skills\ai-model-photography`。旧版如存在先备份并避免重复发现。
+
+### 来源与状态
+
+提示词转换结构来自用户提供的站酷《[AI模特的真实感如何做到](https://www.zcool.com.cn/work/ZNzQxMzAyODQ=.html)》，用户 Chat 测试经验详见 [field-notes.md](.agents/skills/ai-model-photography/references/field-notes.md)。GitHub 上的静态检查、Codex 实际调用和图片生成结果属于不同证据级别，不能互相代替。
+
+**正式合并 `main` 前，保留一次 Codex 本地烟雾测试这一关。**
