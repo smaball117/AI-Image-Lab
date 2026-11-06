@@ -18,7 +18,7 @@
 | --- | --- | --- |
 | 主流程、案例、经验记录与来源区分 | 完成 | SKILL.md、references、examples |
 | 中文 Markdown 手册与独立离线 HTML 图文手册 | 完成 | docs/USAGE.md、docs/usage-manual.html |
-| GitHub 文件/元数据/链接检查 | 待本轮复核 | 独立远程静态检查 |
+| GitHub 文件/元数据/链接检查 | **PASS（2026-11-06）** | 17个相关文件、13条SKILL相对链接、14个规格场景、HTML手册结构与必需文案，经GitHub连接读取并逐项核验 |
 | Windows Codex 技能发现与调用 | **未验证** | 等候首次安装后烟雾测试 |
 | AI 图片模型泛化性/输出像素 | **未验证** | 非本轮要伪称完成的目标 |
 
